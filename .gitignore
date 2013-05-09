@@ -1,0 +1,10 @@
+*.class
+c
+r
+server.jar
+client.jar
+build.xml
+.classpath
+.project
+.settings
+TODO.txt
