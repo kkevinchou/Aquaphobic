@@ -15,11 +15,15 @@ public class PlayerController implements InputProviderListener {
 	
 	private Command left = new BasicCommand("left");
 	private Command right = new BasicCommand("right");
+	private Command jump = new BasicCommand("jump");
+	private Command exit = new BasicCommand("exit");
 	
 	private Game game;
 	private Player player;
+	private GameContainer container;
 	
 	public PlayerController(GameContainer container, Game game, Player player) {
+		this.container = container;
 		this.game = game;
 		this.player = player;
 		
@@ -28,6 +32,9 @@ public class PlayerController implements InputProviderListener {
 		
 		provider.bindCommand(new KeyControl(Input.KEY_LEFT), left);
 		provider.bindCommand(new KeyControl(Input.KEY_RIGHT), right);
+		provider.bindCommand(new KeyControl(Input.KEY_UP), jump);
+		provider.bindCommand(new KeyControl(Input.KEY_ESCAPE), exit);
+		provider.bindCommand(new KeyControl(Input.KEY_Q), exit);
 	}
 
 	@Override
@@ -38,6 +45,10 @@ public class PlayerController implements InputProviderListener {
 			player.moveLeft();
 		} else if (bCommand.getName().equals("right")) {
 			player.moveRight();
+		} else if (bCommand.getName().equals("jump")) {
+			player.jump();
+		} else if (bCommand.getName().equals("exit")) {
+			container.exit();
 		}
 	}
 

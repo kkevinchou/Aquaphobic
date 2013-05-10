@@ -2,14 +2,17 @@ package aqua.entity;
 
 public class Player extends PhysEntity {
 	private float moveSpeed;
+	private float jumpSpeed;
 	
 	public Player(float x, float y, float width, float height) {
 		super(x, y, width, height);
 		moveSpeed = 200;
+		jumpSpeed = 400;
 	}
 	
 	public void jump() {
 		if (onGround) {
+			incrementSpeed(0, -jumpSpeed);
 		}
 	}
 	

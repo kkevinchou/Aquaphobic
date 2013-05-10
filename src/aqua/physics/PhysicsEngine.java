@@ -39,6 +39,10 @@ public class PhysicsEngine {
 			current.performTimeStep(elapsedTime);
 			current.onGround = false;
 			
+			if (current.skipCollisionResolution()) {
+				continue;
+			}
+			
 			for (BaseEntity targetBaseEntity : entities) {
 				PhysEntity target = (PhysEntity)targetBaseEntity;
 				
@@ -73,18 +77,22 @@ public class PhysicsEngine {
 		
 		Point tTopLeft = target.getTopLeft();
 		Point tBottomRight = target.getBottomRight();
+		
+//		Rectangle cHitBox = current.getHitBox();
+//		Rectangle tHitBox = target.getHitBox();
+//		System.out.println(cHitBox.getX() + " " + cHitBox.getY() + " " + cHitBox.getWidth() + " " + cHitBox.getHeight());
+//		System.out.println(tHitBox.getX() + " " + tHitBox.getY() + " " + tHitBox.getWidth() + " " + tHitBox.getHeight());
 
 		if (cTopLeft.x >= tBottomRight.x) {
 			// Collision from the right
 			// T <- C
 			current.setPosition(tBottomRight.x + 1, newY);
-			current.setXSpeed(0);
 		} else if (cBottomRight.y <= tTopLeft.y) {
 			// Collision from above
 			// C
 			// v
 			// T
-			current.setPosition(newX, tTopLeft.y - current.getHeight() - 1);
+			current.setPosition(newX, tTopLeft.y - current.getHeight());
 			current.setYSpeed(0);
 			current.onGround = true;
 		}  else if (cTopLeft.y >= tBottomRight.y) {
@@ -98,7 +106,6 @@ public class PhysicsEngine {
 			// Collision from the left
 			// C -> T
 			current.setPosition(tTopLeft.x - current.getWidth() - 1, newY);
-			current.setXSpeed(0);
 		}
 	}
 }

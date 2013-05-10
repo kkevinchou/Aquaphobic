@@ -62,7 +62,7 @@ public abstract class PhysEntity extends BaseEntity {
 	}
 
 	public Point getBottomRight() {
-		return new Point(hitBox.getX() + hitBox.getWidth() - 1, hitBox.getX() + hitBox.getY() - 1);
+		return new Point(hitBox.getX() + hitBox.getWidth() - 1, hitBox.getY() + hitBox.getHeight() - 1);
 	}
 
 	public void performTimeStep(float elapsedTime) {
@@ -103,9 +103,9 @@ public abstract class PhysEntity extends BaseEntity {
 //		return false;
 //	}
 //	
-//	public boolean skipCollisionResolution() {
-//		return false;
-//	}
+	public boolean skipCollisionResolution() {
+		return false;
+	}
 //	
 //	public void applyCollisionEffect(PhysEntity target) {
 //		return;

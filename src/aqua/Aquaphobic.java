@@ -16,7 +16,7 @@ public class Aquaphobic extends BasicGame {
 	public static int HEIGHT = 600;
 	public static int FPS = 60;
 	
-	private final Color backgroundColor = Color.lightGray;
+	private final Color backgroundColor = Color.black;
 	
 	UnicodeFont font;
 	TextField textField;
@@ -57,6 +57,7 @@ public class Aquaphobic extends BasicGame {
 
 	public void render(GameContainer container, Graphics graphics) throws SlickException {
 //		font.drawString(100, 100, "Who's aquaphobic? YOU ARE!");
+//		textField.render(container, graphics);
 		game.render(container, graphics);
 	}
 
