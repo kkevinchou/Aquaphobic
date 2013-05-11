@@ -75,6 +75,8 @@ public class PlayerController implements InputProviderListener {
 			player.stopMoveLeft();
 		} else if (bCommand.getName().equals("right")) {
 			player.stopMoveRight();
+		} else if (bCommand.getName().equals("jump")) {
+			player.stopJump();
 		}
 	}
 

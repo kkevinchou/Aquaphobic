@@ -11,6 +11,7 @@ public class Player extends PhysEntity {
 	
 	private boolean leftTrigger;
 	private boolean rightTrigger;
+	private boolean jumpTrigger;
 	
 	
 	public Player(float x, float y, float width, float height) {
@@ -32,7 +33,7 @@ public class Player extends PhysEntity {
 	}
 	
 	public void setIsOnGround(boolean state) {
-		if (!isOnGround && state && (movingLeft || movingRight)) {
+		if (!isOnGround && state) {
 			if (!leftTrigger && movingLeft) {
 				incrementSpeed(moveSpeed, 0);
 				movingLeft = false;
@@ -43,7 +44,12 @@ public class Player extends PhysEntity {
 				movingRight = false;
 			}
 		}
+		
 		isOnGround = state;
+		
+		if (isOnGround && jumpTrigger) {
+			jump();
+		}
 	}
 	
 	public void jump() {
@@ -51,6 +57,12 @@ public class Player extends PhysEntity {
 			setIsOnGround(false);
 			incrementSpeed(0, -jumpSpeed);
 		}
+		
+		jumpTrigger = true;
+	}
+	
+	public void stopJump() {
+		jumpTrigger = false;
 	}
 	
 	public void moveLeft() {

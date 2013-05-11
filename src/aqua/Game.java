@@ -37,7 +37,7 @@ public class Game {
 	private void initPlayer(GameContainer container) {
 		player = new Player(350, 100, 50, 50);
 		player.addForce(new BasicForce(player, 0, 800));
-//		playerController = new PlayerController(container, this, player);
+		playerController = new PlayerController(container, this, player);
 		entityManager.add(player);
 	}
 	
@@ -52,21 +52,21 @@ public class Game {
 		
 		Input input = container.getInput();
 		
-		if (input.isKeyDown(Input.KEY_D)) {
-			player.moveRight();
-		} else {
-			player.stopMoveRight();
-		}
-		
-		if (input.isKeyDown(Input.KEY_A)) {
-			player.moveLeft();
-		} else {
-			player.stopMoveLeft();
-		}
-		
-		if (input.isKeyDown(Input.KEY_W)) {
-			player.jump();
-		}
+//		if (input.isKeyDown(Input.KEY_D)) {
+//			player.moveRight();
+//		} else {
+//			player.stopMoveRight();
+//		}
+//		
+//		if (input.isKeyDown(Input.KEY_A)) {
+//			player.moveLeft();
+//		} else {
+//			player.stopMoveLeft();
+//		}
+//		
+//		if (input.isKeyDown(Input.KEY_W)) {
+//			player.jump();
+//		}
 		
 		physicsEngine.performTimeStep(deltaSeconds);
 	}
