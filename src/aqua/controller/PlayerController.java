@@ -38,13 +38,13 @@ public class PlayerController implements InputProviderListener {
 		provider = new InputProvider(container.getInput());
 		provider.addListener(this);
 		
-		provider.bindCommand(new KeyControl(Input.KEY_LEFT), left);
+//		provider.bindCommand(new KeyControl(Input.KEY_LEFT), left);
 		provider.bindCommand(new KeyControl(Input.KEY_A), left);
 		
-		provider.bindCommand(new KeyControl(Input.KEY_RIGHT), right);
+//		provider.bindCommand(new KeyControl(Input.KEY_RIGHT), right);
 		provider.bindCommand(new KeyControl(Input.KEY_D), right);
 		
-		provider.bindCommand(new KeyControl(Input.KEY_UP), jump);
+//		provider.bindCommand(new KeyControl(Input.KEY_UP), jump);
 		provider.bindCommand(new KeyControl(Input.KEY_W), jump);
 		
 		provider.bindCommand(new KeyControl(Input.KEY_ESCAPE), exit);

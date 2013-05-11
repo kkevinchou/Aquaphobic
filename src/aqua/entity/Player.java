@@ -48,6 +48,7 @@ public class Player extends PhysEntity {
 	
 	public void jump() {
 		if (isOnGround) {
+			setIsOnGround(false);
 			incrementSpeed(0, -jumpSpeed);
 		}
 	}
@@ -61,9 +62,26 @@ public class Player extends PhysEntity {
 				incrementSpeed(-moveSpeed, 0);
 				movingLeft = true;
 			}
+			if (movingRight && !rightTrigger) {
+				incrementSpeed(-moveSpeed, 0);
+				movingRight = false;
+			}
 		}
 
 		leftTrigger = true;
+	}
+	
+	public void stopMoveLeft() {
+		if (leftTrigger && isOnGround) {
+			incrementSpeed(moveSpeed, 0);
+			movingLeft = false;
+		}
+		else if (leftTrigger && !isOnGround && movingRight) {
+			incrementSpeed(moveSpeed, 0);
+			movingLeft = false;
+		}
+		
+		leftTrigger = false;
 	}
 	
 	public void moveRight() {
@@ -75,31 +93,21 @@ public class Player extends PhysEntity {
 				incrementSpeed(moveSpeed, 0);
 				movingRight = true;
 			}
+			if (movingLeft && !leftTrigger) {
+				incrementSpeed(moveSpeed, 0);
+				movingLeft = false;
+			}
 		}
 		
 		rightTrigger = true;
-	}
-	
-	public void stopMoveLeft() {
-//		if (leftTrigger) {
-//			iif (isOnGround || (!isOnGround && mov)
-//		}
-		if (leftTrigger && isOnGround) {
-			incrementSpeed(moveSpeed, 0);
-			movingLeft = false;
-		} else if (leftTrigger && !isOnGround && movingRight) {
-			incrementSpeed(moveSpeed, 0);
-			movingLeft = false;
-		}
-		
-		leftTrigger = false;
 	}
 	
 	public void stopMoveRight() {
 		if (rightTrigger && isOnGround) {
 			incrementSpeed(-moveSpeed, 0);
 			movingRight = false;
-		} else if (rightTrigger && !isOnGround && movingLeft) {
+		}
+		else if (rightTrigger && !isOnGround && movingLeft) {
 			incrementSpeed(-moveSpeed, 0);
 			movingRight = false;
 		}
