@@ -8,8 +8,10 @@ public class Player extends PhysEntity {
 	
 	public boolean movingLeft;
 	public boolean movingRight;
-	public boolean fallingLeft;
-	public boolean fallingRight;
+	
+	private boolean leftTrigger;
+	private boolean rightTrigger;
+	
 	
 	public Player(float x, float y, float width, float height) {
 		super(x, y, width, height);
@@ -20,8 +22,9 @@ public class Player extends PhysEntity {
 		
 		movingLeft = false;
 		movingRight = false;
-		fallingRight = false;
-		fallingRight = false;
+		
+		leftTrigger = false;
+		rightTrigger = false;
 	}
 	
 	public boolean getIsOnGround() {
@@ -29,10 +32,16 @@ public class Player extends PhysEntity {
 	}
 	
 	public void setIsOnGround(boolean state) {
-		if (!isOnGround && state && (fallingLeft || fallingRight)) {
-			setXSpeed(0);
-			fallingRight = false;
-			fallingLeft = false;
+		if (!isOnGround && state && (movingLeft || movingRight)) {
+			if (!leftTrigger && movingLeft) {
+				incrementSpeed(moveSpeed, 0);
+				movingLeft = false;
+			}
+			
+			if (!rightTrigger && movingRight) {
+				incrementSpeed(-moveSpeed, 0);
+				movingRight = false;
+			}
 		}
 		isOnGround = state;
 	}
@@ -43,40 +52,59 @@ public class Player extends PhysEntity {
 		}
 	}
 	
-	public void moveRight() {
-		if (!fallingRight && !fallingLeft) {
-			incrementSpeed(moveSpeed, 0);
-			movingRight = true;
-		}
-	}
-	
-	public void stopMoveRight() {
-		if (movingRight) {
-			if (isOnGround) {
-				incrementSpeed(-moveSpeed, 0);
-			} else {
-				fallingRight = true;
-			}
-			movingRight = false;
-		}
-	}
-	
 	public void moveLeft() {
-		if (!fallingLeft && !fallingRight) {
+		if (isOnGround) {
 			incrementSpeed(-moveSpeed, 0);
 			movingLeft = true;
+		} else {
+			if (!movingLeft) {
+				incrementSpeed(-moveSpeed, 0);
+				movingLeft = true;
+			}
 		}
+
+		leftTrigger = true;
+	}
+	
+	public void moveRight() {
+		if (isOnGround) {
+			incrementSpeed(moveSpeed, 0);
+			movingRight = true;
+		} else {
+			if (!movingRight) {
+				incrementSpeed(moveSpeed, 0);
+				movingRight = true;
+			}
+		}
+		
+		rightTrigger = true;
 	}
 	
 	public void stopMoveLeft() {
-		if (movingLeft) {
-			if (isOnGround) {
-				incrementSpeed(moveSpeed, 0);
-			} else {
-				fallingLeft = true;
-			}
+//		if (leftTrigger) {
+//			iif (isOnGround || (!isOnGround && mov)
+//		}
+		if (leftTrigger && isOnGround) {
+			incrementSpeed(moveSpeed, 0);
+			movingLeft = false;
+		} else if (leftTrigger && !isOnGround && movingRight) {
+			incrementSpeed(moveSpeed, 0);
 			movingLeft = false;
 		}
+		
+		leftTrigger = false;
+	}
+	
+	public void stopMoveRight() {
+		if (rightTrigger && isOnGround) {
+			incrementSpeed(-moveSpeed, 0);
+			movingRight = false;
+		} else if (rightTrigger && !isOnGround && movingLeft) {
+			incrementSpeed(-moveSpeed, 0);
+			movingRight = false;
+		}
+		
+		rightTrigger = false;
 	}
 	
 	public void stop() {
