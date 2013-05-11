@@ -1,4 +1,4 @@
-package aqua;
+package aqua.controller;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Input;
@@ -8,7 +8,9 @@ import org.newdawn.slick.command.InputProvider;
 import org.newdawn.slick.command.InputProviderListener;
 import org.newdawn.slick.command.KeyControl;
 
+import aqua.Game;
 import aqua.entity.Player;
+import aqua.physics.BasicForce;
 
 public class PlayerController implements InputProviderListener {
 	private InputProvider provider;
@@ -22,24 +24,36 @@ public class PlayerController implements InputProviderListener {
 	private Player player;
 	private GameContainer container;
 	
+	private void initCommands(Player player) {
+		right = new MovementCommand("right", new BasicForce(player, 800, 0));
+	}
+	
 	public PlayerController(GameContainer container, Game game, Player player) {
 		this.container = container;
 		this.game = game;
 		this.player = player;
 		
+		initCommands(player);
+		
 		provider = new InputProvider(container.getInput());
 		provider.addListener(this);
 		
 		provider.bindCommand(new KeyControl(Input.KEY_LEFT), left);
+		provider.bindCommand(new KeyControl(Input.KEY_A), left);
+		
 		provider.bindCommand(new KeyControl(Input.KEY_RIGHT), right);
+		provider.bindCommand(new KeyControl(Input.KEY_D), right);
+		
 		provider.bindCommand(new KeyControl(Input.KEY_UP), jump);
+		provider.bindCommand(new KeyControl(Input.KEY_W), jump);
+		
 		provider.bindCommand(new KeyControl(Input.KEY_ESCAPE), exit);
-		provider.bindCommand(new KeyControl(Input.KEY_Q), exit);
 	}
 
 	@Override
 	public void controlPressed(Command command) {
-		BasicCommand bCommand = (BasicCommand)command;
+		BasicCommand bCommand = command instanceof BasicCommand ? (BasicCommand)command : null;
+		MovementCommand mCommand = command instanceof MovementCommand ? (MovementCommand)command : null;
 		
 		if (bCommand.getName().equals("left")) {
 			player.moveLeft();
@@ -54,12 +68,13 @@ public class PlayerController implements InputProviderListener {
 
 	@Override
 	public void controlReleased(Command command) {
-		BasicCommand bCommand = (BasicCommand)command;
+		BasicCommand bCommand = command instanceof BasicCommand ? (BasicCommand)command : null;
+		MovementCommand mCommand = command instanceof MovementCommand ? (MovementCommand)command : null;
 		
 		if (bCommand.getName().equals("left")) {
-			player.moveRight();
+			player.stopMoveLeft();
 		} else if (bCommand.getName().equals("right")) {
-			player.moveLeft();
+			player.stopMoveRight();
 		}
 	}
 

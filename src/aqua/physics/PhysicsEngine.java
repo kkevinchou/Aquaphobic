@@ -6,6 +6,7 @@ import java.util.List;
 import aqua.entity.BaseEntity;
 import aqua.entity.EntityManager;
 import aqua.entity.PhysEntity;
+import aqua.entity.Player;
 
 public class PhysicsEngine {
 	private static PhysicsEngine instance;
@@ -37,7 +38,11 @@ public class PhysicsEngine {
 			float oldX = current.getX();
 			float oldY = current.getY();
 			current.performTimeStep(elapsedTime);
-			current.onGround = false;
+			
+			if (current instanceof Player) {
+				Player p = (Player)current;
+				p.setIsOnGround(false);
+			}
 			
 			if (current.skipCollisionResolution()) {
 				continue;
@@ -86,7 +91,7 @@ public class PhysicsEngine {
 		if (cTopLeft.x >= tBottomRight.x) {
 			// Collision from the right
 			// T <- C
-			current.setPosition(tBottomRight.x + 1, newY);
+			current.setPosition(tBottomRight.x + 2, newY);
 		} else if (cBottomRight.y <= tTopLeft.y) {
 			// Collision from above
 			// C
@@ -94,7 +99,10 @@ public class PhysicsEngine {
 			// T
 			current.setPosition(newX, tTopLeft.y - current.getHeight());
 			current.setYSpeed(0);
-			current.onGround = true;
+			if (current instanceof Player) {
+				Player p = (Player)current;
+				p.setIsOnGround(true);
+			}
 		}  else if (cTopLeft.y >= tBottomRight.y) {
 			// Collision from below
 			// T

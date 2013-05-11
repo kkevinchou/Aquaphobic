@@ -14,14 +14,12 @@ public abstract class PhysEntity extends BaseEntity {
 	protected Rectangle hitBox;
 	protected float xSpeed;
 	protected float ySpeed;
-	
-	public boolean onGround;
+	protected float mass = 1;
 	
 	private List<Force> forces;
 
 	public PhysEntity(float x, float y, float width, float height) {
 		super(x, y, width, height);
-		onGround = false;
 		hitBox = new Rectangle(x, y, width, height);
 		forces = new ArrayList<Force>();
 	}
@@ -68,8 +66,8 @@ public abstract class PhysEntity extends BaseEntity {
 	public void performTimeStep(float elapsedTime) {
 		Vector2D netForce = getNetForce();
 		
-		float accelX = netForce.getX();
-		float accelY = netForce.getY();
+		float accelX = netForce.getX() / mass;
+		float accelY = netForce.getY() / mass;
 		incrementSpeed(accelX * elapsedTime, accelY * elapsedTime);
 		
 		float dx = xSpeed * elapsedTime;
@@ -82,6 +80,12 @@ public abstract class PhysEntity extends BaseEntity {
 	}
 	
 	public void removeForce(Force force) {
+//		for (Force f : forces) {
+//			if (f.getId() == force.getId()) {
+//				forces.remove(f);
+//				break;
+//			}
+//		}
 		forces.remove(force);
 	}
 	

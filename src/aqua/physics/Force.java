@@ -1,17 +1,22 @@
 package aqua.physics;
 
-public class Force {
+import aqua.entity.PhysEntity;
+
+public abstract class Force {
 	private static int nextId = 0;
 	private int id;
 	
 	private float x;
 	private float y;
 	
-	public Force(float x, float y) {
+	private PhysEntity target;
+	
+	public Force(PhysEntity target, float x, float y) {
 		this.x = x;
 		this.y = y;
 		
 		id = nextId++;
+		this.target = target;
 	}
 	
 	public int getId() {
@@ -28,5 +33,13 @@ public class Force {
 	
 	public Vector2D getVector() {
 		return new Vector2D(x, y);
+	}
+	
+	public void postResolutionMethod() {
+		return;
+	}
+	
+	public boolean equals(Force force) {
+		return this.id == force.getId();
 	}
 }

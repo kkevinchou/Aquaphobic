@@ -5,12 +5,13 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Rectangle;
 
+import aqua.controller.PlayerController;
 import aqua.entity.BaseEntity;
 import aqua.entity.EntityManager;
 import aqua.entity.PhysEntity;
 import aqua.entity.Platform;
 import aqua.entity.Player;
-import aqua.physics.Force;
+import aqua.physics.BasicForce;
 import aqua.physics.PhysicsEngine;
 
 public class Game {
@@ -28,13 +29,13 @@ public class Game {
 		entityManager.add(new Platform(1, 1, 799, thickness));
 		// left
 		entityManager.add(new Platform(1, thickness + 1, thickness, 600 - (2 * thickness) - 2));
-		// left
-		entityManager.add(new Platform(800 - thickness - 1, thickness + 1, thickness, 600 - (2 * thickness) - 2));
+		// right
+		entityManager.add(new Platform(800 - thickness, thickness + 1, thickness, 600 - (2 * thickness) - 2));
 	}
 	
 	private void initPlayer(GameContainer container) {
 		player = new Player(350, 100, 50, 50);
-		player.addForce(new Force(0, 800));
+		player.addForce(new BasicForce(player, 0, 800));
 		playerController = new PlayerController(container, this, player);
 		entityManager.add(player);
 		
