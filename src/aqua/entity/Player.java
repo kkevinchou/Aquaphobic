@@ -72,13 +72,11 @@ public class Player extends PhysEntity {
 	}
 	
 	public void stopMoveLeft() {
-		if (leftTrigger && isOnGround) {
-			incrementSpeed(moveSpeed, 0);
-			movingLeft = false;
-		}
-		else if (leftTrigger && !isOnGround && movingRight) {
-			incrementSpeed(moveSpeed, 0);
-			movingLeft = false;
+		if (leftTrigger) {
+			if (isOnGround || (!isOnGround && movingRight)) {
+				incrementSpeed(moveSpeed, 0);
+				movingLeft = false;
+			}
 		}
 		
 		leftTrigger = false;
@@ -103,13 +101,11 @@ public class Player extends PhysEntity {
 	}
 	
 	public void stopMoveRight() {
-		if (rightTrigger && isOnGround) {
-			incrementSpeed(-moveSpeed, 0);
-			movingRight = false;
-		}
-		else if (rightTrigger && !isOnGround && movingLeft) {
-			incrementSpeed(-moveSpeed, 0);
-			movingRight = false;
+		if (rightTrigger) {
+			if (isOnGround || (!isOnGround && movingLeft)) {
+				incrementSpeed(-moveSpeed, 0);
+				movingRight = false;
+			}
 		}
 		
 		rightTrigger = false;
