@@ -67,7 +67,7 @@ public class Aquaphobic extends BasicGame {
 	          AppGameContainer app = new AppGameContainer(game);
 	          app.setDisplayMode(WIDTH, HEIGHT, false);
 	          app.setTargetFrameRate(FPS);
-	          app.setShowFPS(false);
+	          app.setShowFPS(true);
 	          app.start();
 	     } catch (SlickException e) {
 	          e.printStackTrace();

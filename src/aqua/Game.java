@@ -2,6 +2,7 @@ package aqua;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Rectangle;
 
@@ -36,9 +37,8 @@ public class Game {
 	private void initPlayer(GameContainer container) {
 		player = new Player(350, 100, 50, 50);
 		player.addForce(new BasicForce(player, 0, 800));
-		playerController = new PlayerController(container, this, player);
+//		playerController = new PlayerController(container, this, player);
 		entityManager.add(player);
-		
 	}
 	
 	public void init(GameContainer container) throws SlickException {
@@ -47,7 +47,27 @@ public class Game {
 	}
 
 	public void update(GameContainer container, int delta) throws SlickException {
+		delta = Math.min(delta, 17);
 		float deltaSeconds = (float)delta / 1000;
+		
+		Input input = container.getInput();
+		
+		if (input.isKeyDown(Input.KEY_D)) {
+			player.moveRight();
+		} else {
+			player.stopMoveRight();
+		}
+		
+		if (input.isKeyDown(Input.KEY_A)) {
+			player.moveLeft();
+		} else {
+			player.stopMoveLeft();
+		}
+		
+		if (input.isKeyDown(Input.KEY_W)) {
+			player.jump();
+		}
+		
 		physicsEngine.performTimeStep(deltaSeconds);
 	}
 
@@ -55,11 +75,7 @@ public class Game {
 		for (BaseEntity entity : entityManager.getEntities()) {
 			Rectangle r1 = new Rectangle(entity.getX(), entity.getY(), entity.getWidth(), entity.getHeight());
 			
-			PhysEntity p = (PhysEntity)entity;
-			Rectangle hitBox = p.getHitBox();
-			
 			graphics.draw(r1);
-			graphics.draw(hitBox);
 		}
 	}
 }

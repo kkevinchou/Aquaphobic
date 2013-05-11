@@ -6,8 +6,8 @@ public class Player extends PhysEntity {
 	
 	private boolean isOnGround;
 	
-	public boolean movingLeft;
-	public boolean movingRight;
+	private boolean movingLeft;
+	private boolean movingRight;
 	
 	private boolean leftTrigger;
 	private boolean rightTrigger;
@@ -54,7 +54,7 @@ public class Player extends PhysEntity {
 	}
 	
 	public void moveLeft() {
-		if (isOnGround) {
+		if (isOnGround && !movingLeft) {
 			incrementSpeed(-moveSpeed, 0);
 			movingLeft = true;
 		} else {
@@ -83,7 +83,7 @@ public class Player extends PhysEntity {
 	}
 	
 	public void moveRight() {
-		if (isOnGround) {
+		if (isOnGround && !movingRight) {
 			incrementSpeed(moveSpeed, 0);
 			movingRight = true;
 		} else {
