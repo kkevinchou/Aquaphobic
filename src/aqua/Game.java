@@ -4,10 +4,13 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.geom.Circle;
 import org.newdawn.slick.geom.Rectangle;
+import org.newdawn.slick.geom.Shape;
 
 import aqua.controller.PlayerController;
 import aqua.entity.BaseEntity;
+import aqua.entity.CordHead;
 import aqua.entity.EntityManager;
 import aqua.entity.PhysEntity;
 import aqua.entity.Platform;
@@ -36,7 +39,7 @@ public class Game {
 	
 	private void initPlayer(GameContainer container) {
 		player = new Player(350, 100, 50, 50);
-		player.addForce(new BasicForce(player, 0, 800));
+		player.addForce(new BasicForce(player, 0, 1200));
 		playerController = new PlayerController(container, this, player);
 		entityManager.add(player);
 	}
@@ -50,7 +53,7 @@ public class Game {
 		delta = Math.min(delta, 17);
 		float deltaSeconds = (float)delta / 1000;
 		
-		Input input = container.getInput();
+//		Input input = container.getInput();
 		
 //		if (input.isKeyDown(Input.KEY_D)) {
 //			player.moveRight();
@@ -73,9 +76,10 @@ public class Game {
 
 	public void render(GameContainer container, Graphics graphics) throws SlickException {
 		for (BaseEntity entity : entityManager.getEntities()) {
-			Rectangle r1 = new Rectangle(entity.getX(), entity.getY(), entity.getWidth(), entity.getHeight());
-			
-			graphics.draw(r1);
+			if (entity instanceof PhysEntity) {
+				PhysEntity pEntity = (PhysEntity)entity;
+				graphics.draw(pEntity.getCollisionShape());
+			}
 		}
 	}
 }

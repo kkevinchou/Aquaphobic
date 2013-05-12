@@ -3,30 +3,55 @@ package aqua.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.newdawn.slick.geom.Circle;
 import org.newdawn.slick.geom.Rectangle;
+import org.newdawn.slick.geom.Shape;
 
 import aqua.physics.Force;
-import aqua.physics.Point;
 import aqua.physics.Vector2D;
 
 // The basic object to be manipulated by the physics engine
 public abstract class PhysEntity extends BaseEntity {
-	protected Rectangle hitBox;
-	protected float xSpeed;
-	protected float ySpeed;
-	protected float mass = 1;
+	public enum CollisionType { RECTANGLE, CIRCLE }
+	
+	private float xSpeed;
+	private float ySpeed;
+	private float mass = 1;
+	
+	private Shape collisionShape;
+	
+	private CollisionType collisionType;
 	
 	private List<Force> forces;
 
-	public PhysEntity(float x, float y, float width, float height) {
+	public PhysEntity(float x, float y, float width, float height, CollisionType collisionType) {
 		super(x, y, width, height);
-		hitBox = new Rectangle(x, y, width, height);
+		if (collisionType == CollisionType.RECTANGLE) {
+			collisionShape = new Rectangle(x, y, width, height);
+		} else if (collisionType == CollisionType.CIRCLE) {
+			collisionShape = new Circle(x, y, width);
+		}
+		
+		xSpeed = 0;
+		ySpeed = 0;
+		
 		forces = new ArrayList<Force>();
+		this.collisionType = collisionType;
+	}
+	
+	public CollisionType getCollisionType() {
+		return collisionType;
 	}
 	
 	public void setPosition(float x, float y) {
 		super.setPosition(x, y);
-		hitBox.setLocation(x, y);
+		
+		if (collisionShape instanceof Circle) {
+			Circle c = (Circle)collisionShape;
+			collisionShape.setLocation(x - c.getRadius(), y - c.getRadius());
+		} else {
+			collisionShape.setLocation(x, y);
+		}
 	}
 	
 	public void setXSpeed(float xs) {
@@ -48,20 +73,14 @@ public abstract class PhysEntity extends BaseEntity {
 	}
 
 	public boolean collidiesWith(PhysEntity target) {
-		return (hitBox.intersects(target.hitBox));
+		return (getCollisionShape().intersects(target.getCollisionShape()));
 	}
 
-	public Rectangle getHitBox() {
-		return hitBox;
+	public Shape getCollisionShape() {
+		return collisionShape;
 	}
-
-	public Point getTopLeft() {
-		return new Point(hitBox.getX(), hitBox.getY());
-	}
-
-	public Point getBottomRight() {
-		return new Point(hitBox.getX() + hitBox.getWidth() - 1, hitBox.getY() + hitBox.getHeight() - 1);
-	}
+	
+	boolean debug = true;
 
 	public void performTimeStep(float elapsedTime) {
 		Vector2D netForce = getNetForce();
@@ -80,12 +99,6 @@ public abstract class PhysEntity extends BaseEntity {
 	}
 	
 	public void removeForce(Force force) {
-//		for (Force f : forces) {
-//			if (f.getId() == force.getId()) {
-//				forces.remove(f);
-//				break;
-//			}
-//		}
 		forces.remove(force);
 	}
 	

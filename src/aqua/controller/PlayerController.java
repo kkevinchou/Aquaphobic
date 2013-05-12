@@ -7,6 +7,7 @@ import org.newdawn.slick.command.Command;
 import org.newdawn.slick.command.InputProvider;
 import org.newdawn.slick.command.InputProviderListener;
 import org.newdawn.slick.command.KeyControl;
+import org.newdawn.slick.command.MouseButtonControl;
 
 import aqua.Game;
 import aqua.entity.Player;
@@ -19,21 +20,19 @@ public class PlayerController implements InputProviderListener {
 	private Command right = new BasicCommand("right");
 	private Command jump = new BasicCommand("jump");
 	private Command exit = new BasicCommand("exit");
+	private Command cord = new BasicCommand("cord");
 	
 	private Game game;
 	private Player player;
 	private GameContainer container;
 	
-	private void initCommands(Player player) {
-		right = new MovementCommand("right", new BasicForce(player, 800, 0));
-	}
+	Input input;
 	
 	public PlayerController(GameContainer container, Game game, Player player) {
 		this.container = container;
 		this.game = game;
 		this.player = player;
-		
-		initCommands(player);
+		input = container.getInput();
 		
 		provider = new InputProvider(container.getInput());
 		provider.addListener(this);
@@ -44,16 +43,17 @@ public class PlayerController implements InputProviderListener {
 //		provider.bindCommand(new KeyControl(Input.KEY_RIGHT), right);
 		provider.bindCommand(new KeyControl(Input.KEY_D), right);
 		
-//		provider.bindCommand(new KeyControl(Input.KEY_UP), jump);
+		provider.bindCommand(new KeyControl(Input.KEY_SPACE), jump);
 		provider.bindCommand(new KeyControl(Input.KEY_W), jump);
 		
 		provider.bindCommand(new KeyControl(Input.KEY_ESCAPE), exit);
+		
+		provider.bindCommand(new MouseButtonControl(0), cord);
 	}
 
 	@Override
 	public void controlPressed(Command command) {
 		BasicCommand bCommand = command instanceof BasicCommand ? (BasicCommand)command : null;
-		MovementCommand mCommand = command instanceof MovementCommand ? (MovementCommand)command : null;
 		
 		if (bCommand.getName().equals("left")) {
 			player.moveLeft();
@@ -63,13 +63,16 @@ public class PlayerController implements InputProviderListener {
 			player.jump();
 		} else if (bCommand.getName().equals("exit")) {
 			container.exit();
+		} else if (bCommand.getName().equals("cord")) {
+			int mouseX = input.getMouseX();
+			int mouseY = input.getMouseY();
+			player.launchCord(mouseX, mouseY);
 		}
 	}
 
 	@Override
 	public void controlReleased(Command command) {
 		BasicCommand bCommand = command instanceof BasicCommand ? (BasicCommand)command : null;
-		MovementCommand mCommand = command instanceof MovementCommand ? (MovementCommand)command : null;
 		
 		if (bCommand.getName().equals("left")) {
 			player.stopMoveLeft();

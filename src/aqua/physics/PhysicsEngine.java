@@ -3,9 +3,12 @@ package aqua.physics;
 import java.util.HashSet;
 import java.util.List;
 
+import org.newdawn.slick.geom.Rectangle;
+
 import aqua.entity.BaseEntity;
 import aqua.entity.EntityManager;
 import aqua.entity.PhysEntity;
+import aqua.entity.PhysEntity.CollisionType;
 import aqua.entity.Player;
 
 public class PhysicsEngine {
@@ -63,7 +66,11 @@ public class PhysicsEngine {
 						handledCollisionEffects.add(current.getId() + " " + target.getId());
 						handledCollisionEffects.add(target.getId() + " " + current.getId());
 					}
-					resolveCollision(oldX, oldY, current, target);
+					
+					if (current.getCollisionType() == CollisionType.RECTANGLE && 
+							target.getCollisionType() == CollisionType.RECTANGLE) {
+						resolveCollision(oldX, oldY, current, target);
+					}
 				}
 			}
 		}
@@ -77,17 +84,15 @@ public class PhysicsEngine {
 		// Rewind the position of the entity to before the collision occured
 		current.setPosition(oldX, oldY);
 		
-		Point cTopLeft = current.getTopLeft();
-		Point cBottomRight = current.getBottomRight();
+		Rectangle cHitBox = (Rectangle)current.getCollisionShape();
+		Rectangle tHitBox = (Rectangle)target.getCollisionShape();
 		
-		Point tTopLeft = target.getTopLeft();
-		Point tBottomRight = target.getBottomRight();
+		Point cTopLeft = new Point(cHitBox.getX(), cHitBox.getY());
+		Point cBottomRight = new Point(cHitBox.getX() + cHitBox.getWidth() - 1, cHitBox.getY() + cHitBox.getHeight() - 1);
 		
-//		Rectangle cHitBox = current.getHitBox();
-//		Rectangle tHitBox = target.getHitBox();
-//		System.out.println(cHitBox.getX() + " " + cHitBox.getY() + " " + cHitBox.getWidth() + " " + cHitBox.getHeight());
-//		System.out.println(tHitBox.getX() + " " + tHitBox.getY() + " " + tHitBox.getWidth() + " " + tHitBox.getHeight());
-
+		Point tTopLeft = new Point(tHitBox.getX(), tHitBox.getY());
+		Point tBottomRight = new Point(tHitBox.getX() + tHitBox.getWidth() - 1, tHitBox.getY() + tHitBox.getHeight() - 1);
+		
 		if (cTopLeft.x >= tBottomRight.x) {
 			// Collision from the right
 			// T <- C
@@ -113,7 +118,7 @@ public class PhysicsEngine {
 		} else if (cBottomRight.x <= tTopLeft.x) {
 			// Collision from the left
 			// C -> T
-			current.setPosition(tTopLeft.x - current.getWidth() - 1, newY);
+			current.setPosition(tTopLeft.x - cHitBox.getWidth() - 1, newY);
 		}
 	}
 }

@@ -1,5 +1,9 @@
 package aqua.entity;
 
+import org.newdawn.slick.geom.Circle;
+
+import aqua.physics.Vector2D;
+
 public class Player extends PhysEntity {
 	private float moveSpeed;
 	private float jumpSpeed;
@@ -13,11 +17,10 @@ public class Player extends PhysEntity {
 	private boolean rightTrigger;
 	private boolean jumpTrigger;
 	
-	
 	public Player(float x, float y, float width, float height) {
-		super(x, y, width, height);
+		super(x, y, width, height, CollisionType.RECTANGLE);
 		moveSpeed = 200;
-		jumpSpeed = 400;
+		jumpSpeed = 600;
 		
 		isOnGround = false;
 		
@@ -121,6 +124,15 @@ public class Player extends PhysEntity {
 		}
 		
 		rightTrigger = false;
+	}
+	
+	public void launchCord(int targetX, int targetY) {
+		Vector2D direction = new Vector2D(targetX - getX(), targetY - getY());
+		direction = direction.normalize();
+		
+		CordHead c = new CordHead(getX() + (getWidth()/2), getY() + (getHeight()/2), direction, this);
+		EntityManager.getInstance().add(c);
+		
 	}
 	
 	public void stop() {
