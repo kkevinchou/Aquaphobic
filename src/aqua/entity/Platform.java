@@ -5,6 +5,7 @@ public class Platform extends PhysEntity {
 		super(x, y, width, height, CollisionType.RECTANGLE);
 	}
 	
+	@Override
 	public boolean skipCollisionResolution() {
 		return true;
 	}

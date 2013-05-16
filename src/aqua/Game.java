@@ -4,13 +4,10 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.geom.Circle;
-import org.newdawn.slick.geom.Rectangle;
-import org.newdawn.slick.geom.Shape;
 
 import aqua.controller.PlayerController;
+import aqua.controller.PlayerController2;
 import aqua.entity.BaseEntity;
-import aqua.entity.CordHead;
 import aqua.entity.EntityManager;
 import aqua.entity.PhysEntity;
 import aqua.entity.Platform;
@@ -22,8 +19,11 @@ public class Game {
 	private PhysicsEngine physicsEngine = PhysicsEngine.getInstance();
 	private EntityManager entityManager = EntityManager.getInstance();
 	
-	private Player player;
-	private PlayerController playerController;
+	private Player player1;
+	private Player player2;
+	
+	private PlayerController playerController1;
+	private PlayerController2 playerController2;
 	
 	private void initWalls() {
 		int thickness = 25;
@@ -38,10 +38,15 @@ public class Game {
 	}
 	
 	private void initPlayer(GameContainer container) {
-		player = new Player(350, 100, 50, 50);
-		player.addForce(new BasicForce(player, 0, 1200));
-		playerController = new PlayerController(container, this, player);
-		entityManager.add(player);
+		player1 = new Player(350, 100, 50, 50);
+		player1.addForce(new BasicForce(player1, 0, 1200));
+		playerController1 = new PlayerController(container, this, player1);
+		entityManager.add(player1);
+		
+		player2 = new Player(100, 100, 50, 50);
+		player2.addForce(new BasicForce(player2, 0, 1200));
+		playerController2 = new PlayerController2(container, this, player2);
+		entityManager.add(player2);
 	}
 	
 	public void init(GameContainer container) throws SlickException {

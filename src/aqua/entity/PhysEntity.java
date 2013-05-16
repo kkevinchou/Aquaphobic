@@ -7,22 +7,26 @@ import org.newdawn.slick.geom.Circle;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
 
+import aqua.effect.Effect;
 import aqua.physics.Force;
 import aqua.physics.Vector2D;
 
 // The basic object to be manipulated by the physics engine
 public abstract class PhysEntity extends BaseEntity {
-	public enum CollisionType { RECTANGLE, CIRCLE }
+	public enum CollisionType { RECTANGLE, CIRCLE, LINE }
 	
 	private float xSpeed;
 	private float ySpeed;
 	private float mass = 1;
 	
-	private Shape collisionShape;
+	protected Shape collisionShape;
 	
 	private CollisionType collisionType;
 	
 	private List<Force> forces;
+	
+	List<Effect> effects;
+	public PhysEntity attachment;
 
 	public PhysEntity(float x, float y, float width, float height, CollisionType collisionType) {
 		super(x, y, width, height);
@@ -36,7 +40,24 @@ public abstract class PhysEntity extends BaseEntity {
 		ySpeed = 0;
 		
 		forces = new ArrayList<Force>();
+		effects = new ArrayList<Effect>();
 		this.collisionType = collisionType;
+	}
+	
+	public void applyEffect(Effect effect) {
+		effect.onApply();
+		effects.add(effect);
+	}
+	
+	public void removeEffect(Effect effect) {
+		effect.onExpire();
+		effects.remove(effect);
+	}
+	
+	public void prePhysics() {
+		for (Effect effect : effects) {
+			effect.prePhysics();
+		}
 	}
 	
 	public CollisionType getCollisionType() {
@@ -112,16 +133,21 @@ public abstract class PhysEntity extends BaseEntity {
 		return result;
 	}
 	
-//	public boolean isPlayer() {
-//		return false;
-//	}
-//	
-//	public boolean isItem() {
-//		return false;
-//	}
-//	
 	public boolean skipCollisionResolution() {
 		return false;
+	}
+	
+	private void onCollision(PhysEntity target) {
+		return;
+	}
+	
+	public void triggerOnCollision(PhysEntity target) {
+		onCollision(target);
+		target.onCollision(this);
+	}
+	
+	public void destroy() {
+		EntityManager.getInstance().remove(getId());
 	}
 //	
 //	public void applyCollisionEffect(PhysEntity target) {

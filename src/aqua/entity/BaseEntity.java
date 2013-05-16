@@ -43,6 +43,10 @@ public abstract class BaseEntity {
 		return height;
 	}
 	
+	public void destroy() {
+		return;
+	}
+	
 	public String toString() {
 		return "BaseEntity[id: " + id + "]";
 	}

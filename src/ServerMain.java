@@ -1,4 +1,4 @@
-package aqua;
+
 import knetwork.server.ServerNetworkManager;
 
 public class ServerMain {

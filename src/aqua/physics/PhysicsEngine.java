@@ -1,5 +1,6 @@
 package aqua.physics;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -14,11 +15,11 @@ import aqua.entity.Player;
 public class PhysicsEngine {
 	private static PhysicsEngine instance;
 	private EntityManager entityManager;
-	HashSet<String> handledCollisionEffects;
+	private List<BaseEntity> creationQueue;
 
 	private PhysicsEngine() {
 		entityManager = EntityManager.getInstance();
-		handledCollisionEffects = new HashSet<String>();
+		creationQueue = new ArrayList<BaseEntity>();
 	}
 
 	public static PhysicsEngine getInstance() {
@@ -28,28 +29,44 @@ public class PhysicsEngine {
 		return instance;
 	}
 	
+	public void queueAddition(BaseEntity entity) {
+		creationQueue.add(entity);
+	}
+	
+	private void addEntitiesFromQueue() {
+		for (BaseEntity entity : creationQueue) {
+			entityManager.add(entity);
+		}
+		creationQueue.clear();
+	}
+	
 	// Perform a physics time step based on the elapsedTime
 	// Handles collision detection and resolution
 	public void performTimeStep(float elapsedTime) {
 		List<BaseEntity> entities = entityManager.getEntities();
 		
-		handledCollisionEffects.clear();
+		HashSet<String> handledCollisionEffects = new HashSet<String>();
 		
 		for (BaseEntity currentBaseEntity : entities) {
 			PhysEntity current = (PhysEntity)currentBaseEntity;
+			
+			current.prePhysics();
 			
 			float oldX = current.getX();
 			float oldY = current.getY();
 			current.performTimeStep(elapsedTime);
 			
 			if (current instanceof Player) {
-				Player p = (Player)current;
-				p.setIsOnGround(false);
+				((Player)current).setIsOnGround(false);
 			}
 			
 			if (current.skipCollisionResolution()) {
 				continue;
 			}
+			
+//			for (int i = 0; i < entities.size(); i++) {
+//
+//				PhysEntity target = (PhysEntity)entities.get(i);
 			
 			for (BaseEntity targetBaseEntity : entities) {
 				PhysEntity target = (PhysEntity)targetBaseEntity;
@@ -65,6 +82,8 @@ public class PhysicsEngine {
 						// so that we don't handle it again during the same timestep
 						handledCollisionEffects.add(current.getId() + " " + target.getId());
 						handledCollisionEffects.add(target.getId() + " " + current.getId());
+						
+						current.triggerOnCollision(target);
 					}
 					
 					if (current.getCollisionType() == CollisionType.RECTANGLE && 
@@ -74,6 +93,8 @@ public class PhysicsEngine {
 				}
 			}
 		}
+		
+		addEntitiesFromQueue();
 	}
 
 	// Resolve collisions between two entities

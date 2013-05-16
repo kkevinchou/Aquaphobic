@@ -1,7 +1,9 @@
 package aqua.entity;
 
-import org.newdawn.slick.geom.Circle;
+import java.util.ArrayList;
+import java.util.List;
 
+import aqua.effect.Effect;
 import aqua.physics.Vector2D;
 
 public class Player extends PhysEntity {
@@ -26,7 +28,6 @@ public class Player extends PhysEntity {
 		
 		movingLeft = false;
 		movingRight = false;
-		
 		leftTrigger = false;
 		rightTrigger = false;
 	}
@@ -127,20 +128,20 @@ public class Player extends PhysEntity {
 	}
 	
 	public void launchCord(int targetX, int targetY) {
-		Vector2D direction = new Vector2D(targetX - getX(), targetY - getY());
+		float playerCenterX = getX() + (getWidth()/2);
+		float playerCenterY = getY() + (getHeight()/2);
+		
+		Vector2D direction = new Vector2D(targetX - playerCenterX, targetY - playerCenterY);
 		direction = direction.normalize();
 		
-		CordHead c = new CordHead(getX() + (getWidth()/2), getY() + (getHeight()/2), direction, this);
+		CordHead c = new CordHead(playerCenterX, playerCenterY, direction, this);
 		EntityManager.getInstance().add(c);
 		
 	}
 	
-	public void stop() {
-		setSpeed(0, 0);
-	}
-	
-	public boolean isPlayer() {
-		return true;
+	@Override
+	public void triggerOnCollision(PhysEntity target) {
+		return;
 	}
 	
 	public String toString() {
