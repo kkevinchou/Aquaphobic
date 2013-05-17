@@ -56,6 +56,7 @@ public class Aquaphobic extends BasicGame {
 	}
 
 	public void render(GameContainer container, Graphics graphics) throws SlickException {
+		graphics.setAntiAlias(true);
 //		font.drawString(100, 100, "Who's aquaphobic? YOU ARE!");
 //		textField.render(container, graphics);
 		game.render(container, graphics);

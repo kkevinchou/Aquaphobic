@@ -32,6 +32,10 @@ public class CordHead extends PhysEntity {
 		return owner;
 	}
 	
+	public Player getTarget() {
+		return target;
+	}
+	
 	@Override
 	public void performTimeStep(float elapsedTime) {
 		if (target == null) {
@@ -42,7 +46,7 @@ public class CordHead extends PhysEntity {
 	}
 	
 	@Override
-	public void triggerOnCollision(PhysEntity target) {
+	protected void onCollision(PhysEntity target) {
 		if (owner.getId() == target.getId() || this.target != null) {
 			return;
 		}
@@ -58,11 +62,18 @@ public class CordHead extends PhysEntity {
 			targetOffsetY = this.getY() - target.getY();
 			
 			pullEffect = new PullEffect(owner, target);
-			((Player)target).applyEffect(pullEffect);
+//			((Player)target).applyEffect(pullEffect);
 			target.attachment = this;
 			
 			tail = new CordTail(this, owner);
 			PhysicsEngine.getInstance().queueAddition(tail);
+			
+			owner.onCordHitSuccessful();
 		}
+	}
+	
+	public void remove() {
+		this.destroy();
+		tail.destroy();
 	}
 }

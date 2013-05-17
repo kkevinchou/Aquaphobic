@@ -139,9 +139,10 @@ public class Player extends PhysEntity {
 		
 	}
 	
-	@Override
-	public void triggerOnCollision(PhysEntity target) {
-		return;
+	public void onCordHitSuccessful() {
+		if (this.attachment != null) {
+			((CordHead)this.attachment).remove();
+		}
 	}
 	
 	public String toString() {

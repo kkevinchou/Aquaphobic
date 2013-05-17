@@ -9,6 +9,7 @@ import org.newdawn.slick.geom.Shape;
 
 import aqua.effect.Effect;
 import aqua.physics.Force;
+import aqua.physics.PhysicsEngine;
 import aqua.physics.Vector2D;
 
 // The basic object to be manipulated by the physics engine
@@ -24,8 +25,7 @@ public abstract class PhysEntity extends BaseEntity {
 	private CollisionType collisionType;
 	
 	private List<Force> forces;
-	
-	List<Effect> effects;
+	private List<Effect> effects;
 	public PhysEntity attachment;
 
 	public PhysEntity(float x, float y, float width, float height, CollisionType collisionType) {
@@ -137,7 +137,7 @@ public abstract class PhysEntity extends BaseEntity {
 		return false;
 	}
 	
-	private void onCollision(PhysEntity target) {
+	protected void onCollision(PhysEntity target) {
 		return;
 	}
 	
@@ -147,15 +147,6 @@ public abstract class PhysEntity extends BaseEntity {
 	}
 	
 	public void destroy() {
-		EntityManager.getInstance().remove(getId());
+		PhysicsEngine.getInstance().queueRemoval(this);
 	}
-//	
-//	public void applyCollisionEffect(PhysEntity target) {
-//		return;
-//	}
-//	
-//	public void mutuallyApplyCollisionEffects(PhysEntity target) {
-//		applyCollisionEffect(target);
-//		target.applyCollisionEffect(this);
-//	}
 }

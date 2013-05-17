@@ -15,11 +15,14 @@ import aqua.entity.Player;
 public class PhysicsEngine {
 	private static PhysicsEngine instance;
 	private EntityManager entityManager;
+	
 	private List<BaseEntity> creationQueue;
+	private List<BaseEntity> removalQueue;
 
 	private PhysicsEngine() {
 		entityManager = EntityManager.getInstance();
 		creationQueue = new ArrayList<BaseEntity>();
+		removalQueue = new ArrayList<BaseEntity>();
 	}
 
 	public static PhysicsEngine getInstance() {
@@ -27,6 +30,10 @@ public class PhysicsEngine {
 			instance = new PhysicsEngine();
 		}
 		return instance;
+	}
+	
+	public void queueRemoval(BaseEntity entity) {
+		removalQueue.add(entity);
 	}
 	
 	public void queueAddition(BaseEntity entity) {
@@ -38,6 +45,13 @@ public class PhysicsEngine {
 			entityManager.add(entity);
 		}
 		creationQueue.clear();
+	}
+	
+	private void removeEntitiesFromQueue() {
+		for (BaseEntity entity : removalQueue) {
+			entityManager.remove(entity.getId());
+		}
+		removalQueue.clear();
 	}
 	
 	// Perform a physics time step based on the elapsedTime
@@ -95,6 +109,7 @@ public class PhysicsEngine {
 		}
 		
 		addEntitiesFromQueue();
+		removeEntitiesFromQueue();
 	}
 
 	// Resolve collisions between two entities

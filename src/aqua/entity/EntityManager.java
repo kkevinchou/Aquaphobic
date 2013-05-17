@@ -20,7 +20,20 @@ public class EntityManager {
 	}
 	
 	public void remove(int id) {
-		entities.remove(id);
+		int removeIndex = -1;
+		
+		for (int i = 0; i < entities.size(); i++) {
+			if (entities.get(i).getId() == id) {
+				removeIndex = i;
+			}
+		}
+		if (removeIndex != -1) {
+			entities.remove(removeIndex);
+		}
+	}
+	
+	public void remove(BaseEntity entity) {
+		remove(entity.getId());
 	}
 	
 	public BaseEntity getEntityById(int id) {
