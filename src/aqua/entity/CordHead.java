@@ -1,5 +1,12 @@
 package aqua.entity;
 
+import java.util.Iterator;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import knetwork.Constants;
+import knetwork.message.AckMessage;
+import knetwork.message.Message;
 import aqua.effect.PullEffect;
 import aqua.physics.PhysicsEngine;
 import aqua.physics.Vector2D;
@@ -17,6 +24,8 @@ public class CordHead extends PhysEntity {
 	private PullEffect pullEffect;
 	
 	private CordTail tail;
+	
+	private boolean collided;
 
 	public CordHead(float x, float y, Vector2D direction, Player owner) {
 		super(x, y, radius, radius, CollisionType.CIRCLE);
@@ -26,6 +35,8 @@ public class CordHead extends PhysEntity {
 		
 		targetOffsetX = 0;
 		targetOffsetY = 0;
+		
+		collided = false;
 	}
 	
 	public Player getOwner() {
@@ -47,12 +58,21 @@ public class CordHead extends PhysEntity {
 	
 	@Override
 	protected void onCollision(PhysEntity target) {
-		if (owner.getId() == target.getId() || this.target != null) {
+		if (collided || owner.getId() == target.getId()
+				|| !(target instanceof Player || target instanceof Platform)) {
 			return;
 		}
-
-		if (target instanceof Player || target instanceof Platform) {
-			setSpeed(0, 0);
+		
+		collided = true;
+		setSpeed(0, 0);
+		
+		if (target instanceof Platform) {
+			Timer timer = new Timer();
+			timer.schedule(new TimerTask() {
+				  public void run() {
+					  owner.destroyCord();
+				  }
+			}, 2000);
 		}
 		
 		if (target instanceof Player) {
@@ -68,12 +88,14 @@ public class CordHead extends PhysEntity {
 			tail = new CordTail(this, owner);
 			PhysicsEngine.getInstance().queueAddition(tail);
 			
-			owner.onCordHitSuccessful();
+			owner.onCordHitSuccessful(this.target);
 		}
 	}
 	
 	public void remove() {
 		this.destroy();
-		tail.destroy();
+		if (tail != null) {
+			tail.destroy();
+		}
 	}
 }

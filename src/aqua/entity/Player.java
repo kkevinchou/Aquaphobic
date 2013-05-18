@@ -1,8 +1,11 @@
 package aqua.entity;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import aqua.effect.BroadEffects.BroadEffect;
 import aqua.effect.Effect;
 import aqua.physics.Vector2D;
 
@@ -19,10 +22,16 @@ public class Player extends PhysEntity {
 	private boolean rightTrigger;
 	private boolean jumpTrigger;
 	
+	CordHead cordHead;
+	
+	private Set<BroadEffect> broadEffects;
+	
 	public Player(float x, float y, float width, float height) {
 		super(x, y, width, height, CollisionType.RECTANGLE);
 		moveSpeed = 200;
 		jumpSpeed = 600;
+		
+		cordHead = null;
 		
 		isOnGround = false;
 		
@@ -30,6 +39,8 @@ public class Player extends PhysEntity {
 		movingRight = false;
 		leftTrigger = false;
 		rightTrigger = false;
+		
+		broadEffects = new HashSet<BroadEffect>();
 	}
 	
 	public boolean getIsOnGround() {
@@ -128,20 +139,48 @@ public class Player extends PhysEntity {
 	}
 	
 	public void launchCord(int targetX, int targetY) {
+		if (broadEffects.contains(BroadEffect.DISARMED)) {
+			return;
+		}
+		
 		float playerCenterX = getX() + (getWidth()/2);
 		float playerCenterY = getY() + (getHeight()/2);
 		
 		Vector2D direction = new Vector2D(targetX - playerCenterX, targetY - playerCenterY);
 		direction = direction.normalize();
 		
-		CordHead c = new CordHead(playerCenterX, playerCenterY, direction, this);
-		EntityManager.getInstance().add(c);
+		cordHead = new CordHead(playerCenterX, playerCenterY, direction, this);
+		EntityManager.getInstance().add(cordHead);
 		
 	}
 	
-	public void onCordHitSuccessful() {
+	public void onCordHitSuccessful(Player target) {
 		if (this.attachment != null) {
-			((CordHead)this.attachment).remove();
+			target.destroyCord();
+			this.attachment = null;
+		}
+	}
+	
+	public void destroyCord() {
+		this.cordHead.remove();
+		this.cordHead = null;
+		broadEffects.remove(BroadEffect.DISARMED);
+	}
+	
+	@Override
+	public void performTimeStep(float elapsedTime) {
+		super.performTimeStep(elapsedTime);
+		if (cordHead == null) {
+			broadEffects.remove(BroadEffect.DISARMED);
+		} else {
+			broadEffects.add(BroadEffect.DISARMED);
+		}
+	}
+	
+	@Override
+	protected void onCollision(PhysEntity target) {
+		if (target instanceof CordHead) {
+			
 		}
 	}
 	
