@@ -37,6 +37,9 @@ public class CordHead extends PhysEntity {
 		targetOffsetY = 0;
 		
 		collided = false;
+		
+		tail = new CordTail(this, owner);
+		PhysicsEngine.getInstance().queueAddition(tail);
 	}
 	
 	public Player getOwner() {
@@ -58,8 +61,9 @@ public class CordHead extends PhysEntity {
 	
 	@Override
 	protected void onCollision(PhysEntity target) {
-		if (collided || owner.getId() == target.getId()
-				|| !(target instanceof Player || target instanceof Platform)) {
+		if (collided || owner.getId() == target.getId() || (tail != null && tail.getId() == target.getId())
+				|| !(target instanceof Player || target instanceof Platform
+				|| target instanceof CordHead || target instanceof CordTail )) {
 			return;
 		}
 		
@@ -71,6 +75,7 @@ public class CordHead extends PhysEntity {
 			timer.schedule(new TimerTask() {
 				  public void run() {
 					  owner.destroyCord();
+					  System.out.println("MEOW");
 				  }
 			}, 2000);
 		}
@@ -85,15 +90,23 @@ public class CordHead extends PhysEntity {
 //			((Player)target).applyEffect(pullEffect);
 			target.attachment = this;
 			
-			tail = new CordTail(this, owner);
-			PhysicsEngine.getInstance().queueAddition(tail);
-			
 			owner.onCordHitSuccessful(this.target);
+		}
+		
+		if (target instanceof CordTail) {
+			((CordTail)target).owner.destroyCord();
+			owner.destroyCord();
+		}
+		
+		if (target instanceof CordHead) {
+			((CordHead)target).owner.destroyCord();
+			owner.destroyCord();
 		}
 	}
 	
-	public void remove() {
-		this.destroy();
+	@Override
+	public void destroy() {
+		super.destroy();
 		if (tail != null) {
 			tail.destroy();
 		}

@@ -162,8 +162,10 @@ public class Player extends PhysEntity {
 	}
 	
 	public void destroyCord() {
-		this.cordHead.remove();
-		this.cordHead = null;
+		if (cordHead != null) {
+			cordHead.destroy();
+			cordHead = null;
+		}
 		broadEffects.remove(BroadEffect.DISARMED);
 	}
 	

@@ -40,12 +40,12 @@ public class Game {
 	private void initPlayer(GameContainer container) {
 		player1 = new Player(350, 100, 50, 50);
 		player1.addForce(new BasicForce(player1, 0, 1200));
-		playerController1 = new PlayerController(container, this, player1);
+//		playerController1 = new PlayerController(container, this, player1);
 		entityManager.add(player1);
 		
 		player2 = new Player(100, 100, 50, 50);
 		player2.addForce(new BasicForce(player2, 0, 1200));
-		playerController2 = new PlayerController2(container, this, player2);
+//		playerController2 = new PlayerController2(container, this, player2);
 		entityManager.add(player2);
 	}
 	
@@ -58,23 +58,27 @@ public class Game {
 		delta = Math.min(delta, 17);
 		float deltaSeconds = (float)delta / 1000;
 		
-//		Input input = container.getInput();
+		Input input = container.getInput();
 		
-//		if (input.isKeyDown(Input.KEY_D)) {
-//			player.moveRight();
-//		} else {
-//			player.stopMoveRight();
-//		}
-//		
-//		if (input.isKeyDown(Input.KEY_A)) {
-//			player.moveLeft();
-//		} else {
-//			player.stopMoveLeft();
-//		}
-//		
-//		if (input.isKeyDown(Input.KEY_W)) {
-//			player.jump();
-//		}
+		if (input.isKeyDown(Input.KEY_D)) {
+			player1.moveRight();
+		} else {
+			player1.stopMoveRight();
+		}
+		
+		if (input.isKeyDown(Input.KEY_A)) {
+			player1.moveLeft();
+		} else {
+			player1.stopMoveLeft();
+		}
+		
+		if (input.isKeyDown(Input.KEY_W)) {
+			player1.jump();
+		}
+		
+		if (input.isMouseButtonDown(0)) {
+			player1.launchCord(input.getMouseX(), input.getMouseY());
+		}
 		
 		physicsEngine.performTimeStep(deltaSeconds);
 	}

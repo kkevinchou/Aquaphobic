@@ -5,8 +5,8 @@ import org.newdawn.slick.geom.Line;
 
 public class CordTail extends PhysEntity {
 	
-	Player owner;
-	CordHead head;
+	public Player owner;
+	public CordHead head;
 
 	public CordTail(CordHead head, Player owner) {
 		super(0, 0, 0, 0, CollisionType.LINE);
@@ -23,9 +23,5 @@ public class CordTail extends PhysEntity {
 		Circle headCollisionShape = (Circle)head.getCollisionShape();
 		
 		line.set(owner.getX() + owner.getWidth()/2, owner.getY() + owner.getHeight()/2, headCollisionShape.getCenterX(), headCollisionShape.getCenterY());
-	}
-
-	public void remove() {
-		head.remove();
 	}
 }

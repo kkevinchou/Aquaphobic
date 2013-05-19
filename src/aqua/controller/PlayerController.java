@@ -53,6 +53,7 @@ public class PlayerController implements InputProviderListener {
 
 	@Override
 	public void controlPressed(Command command) {
+		System.out.println("COMMAND! " +  command);
 		BasicCommand bCommand = command instanceof BasicCommand ? (BasicCommand)command : null;
 		
 		if (bCommand.getName().equals("left")) {
