@@ -24,4 +24,12 @@ public class CordTail extends PhysEntity {
 		
 		line.set(owner.getX() + owner.getWidth()/2, owner.getY() + owner.getHeight()/2, headCollisionShape.getCenterX(), headCollisionShape.getCenterY());
 	}
+	
+	@Override
+	public void onCollision(PhysEntity target) {
+		if (target instanceof CordTail) {
+			((CordTail)target).owner.destroyCord();
+			owner.destroyCord();
+		}
+	}
 }

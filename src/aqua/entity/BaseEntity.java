@@ -47,6 +47,13 @@ public abstract class BaseEntity {
 		return;
 	}
 	
+	public boolean equals(Object entity) {
+		if (!(entity instanceof BaseEntity)) {
+			return false;
+		}
+		return ((BaseEntity)entity).getId() == getId();
+	}
+	
 	public String toString() {
 		return "BaseEntity[id: " + id + "]";
 	}

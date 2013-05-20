@@ -1,12 +1,9 @@
 package aqua.entity;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import aqua.effect.BroadEffects.BroadEffect;
-import aqua.effect.Effect;
 import aqua.physics.Vector2D;
 
 public class Player extends PhysEntity {
@@ -139,7 +136,7 @@ public class Player extends PhysEntity {
 	}
 	
 	public void launchCord(int targetX, int targetY) {
-		if (broadEffects.contains(BroadEffect.DISARMED)) {
+		if (broadEffects.contains(BroadEffect.DISARMED) || destroyed) {
 			return;
 		}
 		
@@ -170,6 +167,12 @@ public class Player extends PhysEntity {
 	}
 	
 	@Override
+	public void destroy() {
+		super.destroy();
+		destroyCord();
+	}
+	
+	@Override
 	public void performTimeStep(float elapsedTime) {
 		super.performTimeStep(elapsedTime);
 		if (cordHead == null) {
@@ -181,8 +184,11 @@ public class Player extends PhysEntity {
 	
 	@Override
 	protected void onCollision(PhysEntity target) {
-		if (target instanceof CordHead) {
-			
+		if (target instanceof Player) {
+			if (cordHead != null && target.attachment != null && target.attachment.equals(cordHead)) {
+				target.destroy();
+				destroyCord();
+			}
 		}
 	}
 	

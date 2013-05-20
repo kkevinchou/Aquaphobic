@@ -1,5 +1,5 @@
 package aqua.effect;
 
 public abstract class BroadEffects {
-	public enum BroadEffect { DISARMED, IMMOBILIZED }
+	public enum BroadEffect { DISARMED }
 }

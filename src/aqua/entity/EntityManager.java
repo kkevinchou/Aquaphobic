@@ -25,15 +25,17 @@ public class EntityManager {
 		for (int i = 0; i < entities.size(); i++) {
 			if (entities.get(i).getId() == id) {
 				removeIndex = i;
+				break;
 			}
 		}
+		
 		if (removeIndex != -1) {
 			entities.remove(removeIndex);
 		}
 	}
 	
 	public void remove(BaseEntity entity) {
-		remove(entity.getId());
+		entities.remove(entity);
 	}
 	
 	public BaseEntity getEntityById(int id) {

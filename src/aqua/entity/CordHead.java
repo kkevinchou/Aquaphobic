@@ -26,6 +26,8 @@ public class CordHead extends PhysEntity {
 	private CordTail tail;
 	
 	private boolean collided;
+	
+	Timer timer;
 
 	public CordHead(float x, float y, Vector2D direction, Player owner) {
 		super(x, y, radius, radius, CollisionType.CIRCLE);
@@ -40,6 +42,7 @@ public class CordHead extends PhysEntity {
 		
 		tail = new CordTail(this, owner);
 		PhysicsEngine.getInstance().queueAddition(tail);
+		timer = new Timer();
 	}
 	
 	public Player getOwner() {
@@ -61,7 +64,7 @@ public class CordHead extends PhysEntity {
 	
 	@Override
 	protected void onCollision(PhysEntity target) {
-		if (collided || owner.getId() == target.getId() || (tail != null && tail.getId() == target.getId())
+		if (collided || owner.equals(target) || (tail != null && tail.equals(target))
 				|| !(target instanceof Player || target instanceof Platform
 				|| target instanceof CordHead || target instanceof CordTail )) {
 			return;
@@ -71,11 +74,9 @@ public class CordHead extends PhysEntity {
 		setSpeed(0, 0);
 		
 		if (target instanceof Platform) {
-			Timer timer = new Timer();
 			timer.schedule(new TimerTask() {
 				  public void run() {
 					  owner.destroyCord();
-					  System.out.println("MEOW");
 				  }
 			}, 2000);
 		}
@@ -107,6 +108,7 @@ public class CordHead extends PhysEntity {
 	@Override
 	public void destroy() {
 		super.destroy();
+		timer.cancel();
 		if (tail != null) {
 			tail.destroy();
 		}

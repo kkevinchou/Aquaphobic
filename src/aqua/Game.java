@@ -5,8 +5,6 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 
-import aqua.controller.PlayerController;
-import aqua.controller.PlayerController2;
 import aqua.entity.BaseEntity;
 import aqua.entity.EntityManager;
 import aqua.entity.PhysEntity;
@@ -21,9 +19,6 @@ public class Game {
 	
 	private Player player1;
 	private Player player2;
-	
-	private PlayerController playerController1;
-	private PlayerController2 playerController2;
 	
 	private void initWalls() {
 		int thickness = 25;
@@ -40,12 +35,10 @@ public class Game {
 	private void initPlayer(GameContainer container) {
 		player1 = new Player(350, 100, 50, 50);
 		player1.addForce(new BasicForce(player1, 0, 1200));
-//		playerController1 = new PlayerController(container, this, player1);
 		entityManager.add(player1);
 		
 		player2 = new Player(100, 100, 50, 50);
 		player2.addForce(new BasicForce(player2, 0, 1200));
-//		playerController2 = new PlayerController2(container, this, player2);
 		entityManager.add(player2);
 	}
 	
@@ -66,18 +59,42 @@ public class Game {
 			player1.stopMoveRight();
 		}
 		
+		if (input.isKeyDown(Input.KEY_RIGHT)) {
+			player2.moveRight();
+		} else {
+			player2.stopMoveRight();
+		}
+		
 		if (input.isKeyDown(Input.KEY_A)) {
 			player1.moveLeft();
 		} else {
 			player1.stopMoveLeft();
 		}
 		
+		if (input.isKeyDown(Input.KEY_LEFT)) {
+			player2.moveLeft();
+		} else {
+			player2.stopMoveLeft();
+		}
+		
 		if (input.isKeyDown(Input.KEY_W)) {
 			player1.jump();
+		} else {
+			player1.stopJump();
+		}
+		
+		if (input.isKeyDown(Input.KEY_UP)) {
+			player2.jump();
+		} else {
+			player2.stopJump();
 		}
 		
 		if (input.isMouseButtonDown(0)) {
 			player1.launchCord(input.getMouseX(), input.getMouseY());
+		}
+		
+		if (input.isMouseButtonDown(1)) {
+			player2.launchCord(input.getMouseX(), input.getMouseY());
 		}
 		
 		physicsEngine.performTimeStep(deltaSeconds);

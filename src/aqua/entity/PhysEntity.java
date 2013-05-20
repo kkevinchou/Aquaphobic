@@ -27,6 +27,8 @@ public abstract class PhysEntity extends BaseEntity {
 	private List<Force> forces;
 	private List<Effect> effects;
 	public PhysEntity attachment;
+	
+	public boolean destroyed;
 
 	public PhysEntity(float x, float y, float width, float height, CollisionType collisionType) {
 		super(x, y, width, height);
@@ -38,6 +40,7 @@ public abstract class PhysEntity extends BaseEntity {
 		
 		xSpeed = 0;
 		ySpeed = 0;
+		destroyed = false;
 		
 		forces = new ArrayList<Force>();
 		effects = new ArrayList<Effect>();
@@ -147,6 +150,7 @@ public abstract class PhysEntity extends BaseEntity {
 	}
 	
 	public void destroy() {
+		destroyed = true;
 		PhysicsEngine.getInstance().queueRemoval(this);
 	}
 }

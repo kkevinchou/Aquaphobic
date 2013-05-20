@@ -49,7 +49,8 @@ public class PhysicsEngine {
 	
 	private void removeEntitiesFromQueue() {
 		for (BaseEntity entity : removalQueue) {
-			entityManager.remove(entity.getId());
+//			entityManager.remove(entity.getId());
+			entityManager.remove(entity);
 		}
 		removalQueue.clear();
 	}
@@ -86,7 +87,7 @@ public class PhysicsEngine {
 				PhysEntity target = (PhysEntity)targetBaseEntity;
 				
 				// Don't check collisions with itself
-				if (current.getId() == target.getId()) {
+				if (current.equals(target)) {
 					continue;
 				}
 				
