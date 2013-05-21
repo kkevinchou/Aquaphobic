@@ -41,7 +41,7 @@ public class SendThread extends Thread {
 				Helper.log("Sent ACK| for message " + ack.getAckMsgId());
 			} else {
 //		        Helper.log("[Send Thread] Sending message| size = " + data.length + ", seq# = " + message.getSeqNumber());
-				Helper.log("--- SEND [" + message.getSenderId() + " -> " + message.getReceiverId() + "]| " + message.getMessageId());
+				Helper.log("--- SEND [" + message.getSenderId() + " -> " + message.getReceiverId() + "]| " + message.getMessageId() + " [SIZE: " + data.length + "]");
 			}
 	        
 //			Helper.log("Target IP: " + destinationAddress.getHostAddress() + ", " + destinationPort);

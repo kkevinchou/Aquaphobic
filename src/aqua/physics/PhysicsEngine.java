@@ -78,11 +78,7 @@ public class PhysicsEngine {
 			if (current.skipCollisionResolution()) {
 				continue;
 			}
-			
-//			for (int i = 0; i < entities.size(); i++) {
-//
-//				PhysEntity target = (PhysEntity)entities.get(i);
-			
+
 			for (BaseEntity targetBaseEntity : entities) {
 				PhysEntity target = (PhysEntity)targetBaseEntity;
 				

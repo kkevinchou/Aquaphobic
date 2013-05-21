@@ -26,6 +26,16 @@ public class ServerNetworkManager extends BaseNetworkingManager {
 		super(Constants.SERVER_IN_QUEUE_SIZE);
 	}
 	
+	public List<Integer> getClientIds() {
+		List<Integer> clientIds = new ArrayList<Integer>();
+		
+		for (Integer clientId : clientSendThreads.keySet()) {
+			clientIds.add(clientId);
+		}
+		
+		return clientIds;
+	}
+	
 	public boolean waitForRegistrations(int port, int numRegistrations) {
 		try {
 			socket = new DatagramSocket(port);
@@ -146,7 +156,9 @@ public class ServerNetworkManager extends BaseNetworkingManager {
 		}
 	}
 	
+	@Override
 	public void disconnect() {
+		super.disconnect();
 		receiveThread.interrupt();
 		
 		for (ConcurrentMap.Entry<Integer, SendThread> entry : clientSendThreads.entrySet()) {
