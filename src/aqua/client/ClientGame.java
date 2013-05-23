@@ -2,8 +2,8 @@ package aqua.client;
 
 import java.util.List;
 
-import knetwork.client.ClientNetworkManager;
-import knetwork.message.Message;
+import knetwork.managers.ClientNetworkManager;
+import knetwork.message.messages.Message;
 
 import org.newdawn.slick.BasicGame;
 import org.newdawn.slick.Color;
@@ -12,8 +12,10 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.font.effects.ColorEffect;
+import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.gui.TextField;
 
+import aqua.message.AquaMessageFactory;
 import aqua.message.ServerUpdateMessage;
 import aqua.message.UpdateEntity;
 
@@ -28,11 +30,12 @@ public class ClientGame extends BasicGame {
 	UnicodeFont font;
 	TextField textField;
 	
-	private List<UpdateEntity> updateEntities;
+	private List<Shape> drawShapes;
 
 	public ClientGame(String title) {
 		super(title);
 		clientNetworkManager = new ClientNetworkManager();
+		clientNetworkManager.setMessageFactory(new AquaMessageFactory());
 	}
 
 	private void initFonts() {
@@ -66,21 +69,23 @@ public class ClientGame extends BasicGame {
 	@Override
 	public void render(GameContainer container, Graphics graphics) throws SlickException {
 		graphics.setAntiAlias(true);
-		if (updateEntities == null) {
+		
+		if (drawShapes == null) {
 			return;
 		}
 		
-		for (UpdateEntity entity : updateEntities) {
-			graphics.draw(entity.shape);
+		for (Shape shape : drawShapes) {
+			graphics.draw(shape);
 		}
 		
 	}
 
 	@Override
 	public void update(GameContainer container, int graphics) throws SlickException {
-		Message m = clientNetworkManager.recv();
-		if (m instanceof ServerUpdateMessage) {
-			updateEntities = ((ServerUpdateMessage)m).entities;
+		Message message = clientNetworkManager.recv();
+		if (message instanceof ServerUpdateMessage) {
+			System.out.println("NUM SHAPES : " + ((ServerUpdateMessage)message).getShapes().size());
+			drawShapes = ((ServerUpdateMessage)message).getShapes();
 		}
 	}
 

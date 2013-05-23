@@ -1,10 +1,6 @@
 package aqua.entity;
 
-import java.io.Serializable;
-
-public abstract class BaseEntity implements Serializable {
-	private static final long serialVersionUID = 7524134163491422371L;
-	
+public abstract class BaseEntity {
 	public int id;
 	protected float x;
 	protected float y;

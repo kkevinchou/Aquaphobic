@@ -1,12 +1,8 @@
 package aqua.entity;
 
-import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import knetwork.Constants;
-import knetwork.message.AckMessage;
-import knetwork.message.Message;
 import aqua.effect.PullEffect;
 import aqua.physics.PhysicsEngine;
 import aqua.physics.Vector2D;
@@ -88,7 +84,7 @@ public class CordHead extends PhysEntity {
 			targetOffsetY = this.getY() - target.getY();
 			
 			pullEffect = new PullEffect(owner, target);
-//			((Player)target).applyEffect(pullEffect);
+			((Player)target).applyEffect(pullEffect);
 			target.attachment = this;
 			
 			owner.onCordHitSuccessful(this.target);

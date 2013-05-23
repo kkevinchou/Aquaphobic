@@ -2,15 +2,14 @@ package aqua.server;
 import java.util.HashMap;
 import java.util.Map;
 
-import aqua.entity.BaseEntity;
 import aqua.entity.Player;
+import aqua.message.AquaMessageFactory;
 import aqua.message.ServerUpdateMessage;
 
 import common.Utility;
 
-import knetwork.message.Message;
-import knetwork.message.TestMessage;
-import knetwork.server.ServerNetworkManager;
+import knetwork.managers.ServerNetworkManager;
+import knetwork.message.messages.Message;
 
 public class ServerMain {
 	private Map<Integer, ClientProfile> clientProfiles;
@@ -22,6 +21,7 @@ public class ServerMain {
 		game = new ServerGame();
 		clientProfiles = new HashMap<Integer, ClientProfile>();
 		serverNetworkManager = new ServerNetworkManager();
+		serverNetworkManager.setMessageFactory(new AquaMessageFactory());
 	}
 	
 	private void registerPlayer(Integer clientId) {
@@ -53,11 +53,10 @@ public class ServerMain {
 			
 			game.update(delta);
 			
-			Message updateMessage = new ServerUpdateMessage(game.getEntities());
-//			Message updateMessage = new ServerUpdateMessage(null);
 			
 			if (!sent) {
 				sent = true;
+				Message updateMessage = new ServerUpdateMessage(game.getEntities());
 				serverNetworkManager.send(1, updateMessage);
 			}
 			
