@@ -4,15 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EntityManager {
-	private static EntityManager instance = new EntityManager();
 	private List<BaseEntity> entities;
 	
-	private EntityManager() {
+	public EntityManager() {
 		entities = new ArrayList<BaseEntity>();
-	}
-	
-	public static EntityManager getInstance() {
-		return instance;
 	}
 	
 	public void add(BaseEntity entity) {

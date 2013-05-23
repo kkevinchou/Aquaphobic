@@ -1,5 +1,7 @@
 
 
+import java.util.List;
+
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
@@ -15,31 +17,32 @@ import aqua.physics.PhysicsEngine;
 
 public class Game {
 	private PhysicsEngine physicsEngine = PhysicsEngine.getInstance();
-	private EntityManager entityManager = EntityManager.getInstance();
 	
 	private Player player1;
 	private Player player2;
 	
 	private void initWalls() {
 		int thickness = 25;
-		// bottom
-		entityManager.add(new Platform(1, 600 - thickness - 1, 799, thickness));
-		// top
-		entityManager.add(new Platform(1, 1, 799, thickness));
-		// left
-		entityManager.add(new Platform(1, thickness + 1, thickness, 600 - (2 * thickness) - 2));
-		// right
-		entityManager.add(new Platform(800 - thickness, thickness + 1, thickness, 600 - (2 * thickness) - 2));
+		
+		PhysEntity bottomWall = new Platform(1, 600 - thickness - 1, 799, thickness);
+		PhysEntity topWall = new Platform(1, 1, 799, thickness);
+		PhysEntity leftWall = new Platform(1, thickness + 1, thickness, 600 - (2 * thickness) - 2);
+		PhysEntity rightWall = new Platform(800 - thickness, thickness + 1, thickness, 600 - (2 * thickness) - 2);
+		
+		physicsEngine.queueAddition(bottomWall);
+		physicsEngine.queueAddition(topWall);
+		physicsEngine.queueAddition(leftWall);
+		physicsEngine.queueAddition(rightWall);
 	}
 	
 	private void initPlayer(GameContainer container) {
 		player1 = new Player(350, 100, 50, 50);
 		player1.addForce(new BasicForce(player1, 0, 1200));
-		entityManager.add(player1);
+		physicsEngine.queueAddition(player1);
 		
 		player2 = new Player(100, 100, 50, 50);
 		player2.addForce(new BasicForce(player2, 0, 1200));
-		entityManager.add(player2);
+		physicsEngine.queueAddition(player2);
 	}
 	
 	public void init(GameContainer container) throws SlickException {
@@ -101,7 +104,9 @@ public class Game {
 	}
 
 	public void render(GameContainer container, Graphics graphics) throws SlickException {
-		for (BaseEntity entity : entityManager.getEntities()) {
+		List<BaseEntity> entities = PhysicsEngine.getInstance().getEntities();
+		
+		for (BaseEntity entity : entities) {
 			if (entity instanceof PhysEntity) {
 				PhysEntity pEntity = (PhysEntity)entity;
 				graphics.draw(pEntity.getCollisionShape());

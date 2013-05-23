@@ -27,8 +27,8 @@ public class ClientGame extends BasicGame {
 
 	private final Color backgroundColor = Color.black;
 
-	UnicodeFont font;
-	TextField textField;
+	private UnicodeFont font;
+	private TextField textField;
 	
 	private List<Shape> drawShapes;
 
@@ -77,7 +77,6 @@ public class ClientGame extends BasicGame {
 		for (Shape shape : drawShapes) {
 			graphics.draw(shape);
 		}
-		
 	}
 
 	@Override

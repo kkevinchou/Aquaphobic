@@ -20,9 +20,9 @@ public class PhysicsEngine {
 	private List<BaseEntity> removalQueue;
 
 	private PhysicsEngine() {
-		entityManager = EntityManager.getInstance();
 		creationQueue = new ArrayList<BaseEntity>();
 		removalQueue = new ArrayList<BaseEntity>();
+		entityManager = new EntityManager();
 	}
 
 	public static PhysicsEngine getInstance() {
@@ -153,5 +153,9 @@ public class PhysicsEngine {
 			// C -> T
 			current.setPosition(tTopLeft.x - cHitBox.getWidth() - 1, newY);
 		}
+	}
+	
+	public List<BaseEntity> getEntities() {
+		return entityManager.getEntities();
 	}
 }

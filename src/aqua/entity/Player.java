@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import aqua.effect.BroadEffects.BroadEffect;
+import aqua.physics.PhysicsEngine;
 import aqua.physics.Vector2D;
 
 public class Player extends PhysEntity {
@@ -147,7 +148,7 @@ public class Player extends PhysEntity {
 		direction = direction.normalize();
 		
 		cordHead = new CordHead(playerCenterX, playerCenterY, direction, this);
-		EntityManager.getInstance().add(cordHead);
+		PhysicsEngine.getInstance().queueAddition(cordHead);
 		
 	}
 	
