@@ -63,8 +63,6 @@ public class ServerGame {
 	}
 	
 	public void handlePlayerAction(int playerId, PlayerActionMessage actionMessage) {
-		System.out.println(playerId);
-		System.out.println("SIZE " + playerMap.size());
 		Player player = playerMap.get(playerId);
 		
 		if (actionMessage.isLeft()) {
@@ -106,7 +104,6 @@ public class ServerGame {
 		initWalls();
 		
 		for (Integer clientId : serverNetworkManager.getClientIds()) {
-			System.out.println("REGISTER " + clientId);
 			registerPlayer(clientId);
 		}
 	}
