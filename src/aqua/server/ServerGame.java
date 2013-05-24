@@ -37,10 +37,21 @@ public class ServerGame {
 		PhysEntity leftWall = new Platform(1, thickness + 1, thickness, 600 - (2 * thickness) - 2);
 		PhysEntity rightWall = new Platform(800 - thickness, thickness + 1, thickness, 600 - (2 * thickness) - 2);
 		
+		PhysEntity midLeftWall = new Platform(150, 450, 150, thickness);
+		PhysEntity midRightWall = new Platform(500, 450, 150, thickness);
+		PhysEntity centerWall = new Platform(325, 320, 150, thickness);
+		PhysEntity topLeftWall = new Platform(150, 190, 150, thickness);
+		PhysEntity topRightWall = new Platform(500, 190, 150, thickness);
+		
 		physicsEngine.queueAddition(bottomWall);
 		physicsEngine.queueAddition(topWall);
 		physicsEngine.queueAddition(leftWall);
 		physicsEngine.queueAddition(rightWall);
+		physicsEngine.queueAddition(midLeftWall);
+		physicsEngine.queueAddition(midRightWall);
+		physicsEngine.queueAddition(centerWall);
+		physicsEngine.queueAddition(topLeftWall);
+		physicsEngine.queueAddition(topRightWall);
 		
 		playerMap = new HashMap<Integer, Player>();
 	}
