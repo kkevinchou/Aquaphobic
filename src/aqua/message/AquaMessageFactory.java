@@ -10,12 +10,12 @@ import knetwork.message.messages.Message;
 public class AquaMessageFactory extends MessageFactory {
 	@Override
 	protected Message buildMessageBody(DatagramPacket packet, int intMessageType, MessageBody body) {
-		Logger.log("Received Type : " + intMessageType);
-		
 		Message message = null;
 		
 		if (intMessageType == ServerUpdateMessage.MESSAGE_TYPE) {
 			message = ServerUpdateMessage.constructFromMessageBody(body);
+		} else if (intMessageType == PlayerActionMessage.MESSAGE_TYPE) {
+			message = PlayerActionMessage.constructFromMessageBody(body);
 		}
 		
 		return message;

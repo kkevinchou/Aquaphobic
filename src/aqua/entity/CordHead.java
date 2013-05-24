@@ -12,7 +12,7 @@ public class CordHead extends PhysEntity {
 	private static final float baseSpeed = 800;
 	
 	private Player owner;
-	private Player target;
+	private PhysEntity target;
 	
 	private float targetOffsetX;
 	private float targetOffsetY;
@@ -23,7 +23,7 @@ public class CordHead extends PhysEntity {
 	
 	private boolean collided;
 	
-	Timer timer;
+	private float secondsSinceCollision;
 
 	public CordHead(float x, float y, Vector2D direction, Player owner) {
 		super(x, y, radius, radius, CollisionType.CIRCLE);
@@ -35,26 +35,29 @@ public class CordHead extends PhysEntity {
 		targetOffsetY = 0;
 		
 		collided = false;
+		secondsSinceCollision = 0;
 		
 		tail = new CordTail(this, owner);
 		PhysicsEngine.getInstance().queueAddition(tail);
-		timer = new Timer();
 	}
 	
 	public Player getOwner() {
 		return owner;
 	}
 	
-	public Player getTarget() {
-		return target;
-	}
-	
 	@Override
-	public void performTimeStep(float elapsedTime) {
-		if (target == null) {
-			super.performTimeStep(elapsedTime);
-		} else {
+	public void performTimeStep(float elapsedTimeSeconds) {
+		if (collided && target instanceof Platform) {
+			secondsSinceCollision += elapsedTimeSeconds;
+			if (secondsSinceCollision >= 2.0) {
+				owner.destroyCord();
+			}
+		}
+		
+		if (target instanceof Player) {
 			this.setPosition(target.getX() + targetOffsetX, target.getY() + targetOffsetY);
+		} else {
+			super.performTimeStep(elapsedTimeSeconds);
 		}
 	}
 	
@@ -69,17 +72,9 @@ public class CordHead extends PhysEntity {
 		collided = true;
 		setSpeed(0, 0);
 		
-		if (target instanceof Platform) {
-			timer.schedule(new TimerTask() {
-				  public void run() {
-					  owner.destroyCord();
-				  }
-			}, 2000);
-		}
+		this.target = target;
 		
 		if (target instanceof Player) {
-			this.target = (Player)target;
-			
 			targetOffsetX = this.getX() - target.getX();
 			targetOffsetY = this.getY() - target.getY();
 			
@@ -87,7 +82,7 @@ public class CordHead extends PhysEntity {
 			((Player)target).applyEffect(pullEffect);
 			target.attachment = this;
 			
-			owner.onCordHitSuccessful(this.target);
+			owner.onCordHitSuccessful((Player)target);
 		}
 		
 		if (target instanceof CordTail) {
@@ -104,7 +99,6 @@ public class CordHead extends PhysEntity {
 	@Override
 	public void destroy() {
 		super.destroy();
-		timer.cancel();
 		if (tail != null) {
 			tail.destroy();
 		}

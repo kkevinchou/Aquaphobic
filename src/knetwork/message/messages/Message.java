@@ -3,6 +3,7 @@ package knetwork.message.messages;
 import java.nio.ByteBuffer;
 
 import knetwork.Constants;
+import knetwork.message.MessageBody;
 import knetwork.message.MessageHeader;
 
 public abstract class Message {
@@ -54,6 +55,14 @@ public abstract class Message {
 		}
 		
 		return messageBytes;
+	}
+	
+	public final int getProtocolId() {
+		return protocolId;
+	}
+	
+	public final int getMessageType() {
+		return messageType;
 	}
 	
 	public final int getSenderId() {

@@ -48,16 +48,21 @@ public class PhysicsEngine {
 	}
 	
 	private void removeEntitiesFromQueue() {
-		for (BaseEntity entity : removalQueue) {
-//			entityManager.remove(entity.getId());
-			entityManager.remove(entity);
+		int numElements = removalQueue.size();
+		for (int i = 0; i < numElements; i++) {
+			entityManager.remove(removalQueue.get(i));
 		}
+		
+		for (int i = 0; i < numElements; i++) {
+			removalQueue.remove(0);
+		}
+		
 		removalQueue.clear();
 	}
 	
 	// Perform a physics time step based on the elapsedTime
 	// Handles collision detection and resolution
-	public void performTimeStep(float elapsedTime) {
+	public void performTimeStep(float elapsedTimeSeconds) {
 		List<BaseEntity> entities = entityManager.getEntities();
 		
 		HashSet<String> handledCollisionEffects = new HashSet<String>();
@@ -69,7 +74,7 @@ public class PhysicsEngine {
 			
 			float oldX = current.getX();
 			float oldY = current.getY();
-			current.performTimeStep(elapsedTime);
+			current.performTimeStep(elapsedTimeSeconds);
 			
 			if (current instanceof Player) {
 				((Player)current).setIsOnGround(false);

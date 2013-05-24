@@ -4,6 +4,8 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.newdawn.slick.geom.Circle;
+import org.newdawn.slick.geom.Line;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
 
@@ -19,6 +21,10 @@ public class ServerUpdateMessage extends Message {
 	
 	private static final int RECT_TYPE = 1;
 	private static final int RECT_BYTE_SIZE = 5 * 4;
+	private static final int CIRCLE_TYPE = 2;
+	private static final int CIRCLE_BYTE_SIZE = 4 * 4;
+	private static final int LINE_TYPE = 3;
+	private static final int LINE_BYTE_SIZE = 5 * 4;
 	
 	public static final int MESSAGE_TYPE = 10;
 	
@@ -62,6 +68,19 @@ public class ServerUpdateMessage extends Message {
 			float height = buffer.getFloat();
 			
 			return new Rectangle(x, y, width, height);
+		} else if (type == CIRCLE_TYPE) {
+			float x = buffer.getFloat();
+			float y = buffer.getFloat();
+			float radius = buffer.getFloat();
+			
+			return new Circle(x, y, radius);
+		} else if (type == LINE_TYPE) {
+			float x1 = buffer.getFloat();
+			float y1 = buffer.getFloat();
+			float x2 = buffer.getFloat();
+			float y2 = buffer.getFloat();
+			
+			return new Line(x1, y1, x2, y2);
 		}
 
 		return null;
@@ -92,6 +111,10 @@ public class ServerUpdateMessage extends Message {
 	private int calculateRequiredBytesForShape(Shape shape) {
 		if (shape instanceof Rectangle) {
 			return RECT_BYTE_SIZE;
+		} else if (shape instanceof Circle) {
+			return CIRCLE_BYTE_SIZE;
+		} else if (shape instanceof Line) {
+			return LINE_BYTE_SIZE;
 		}
 		
 		return 0;
@@ -109,6 +132,27 @@ public class ServerUpdateMessage extends Message {
 			buffer.putFloat(rectangle.getY());
 			buffer.putFloat(rectangle.getWidth());
 			buffer.putFloat(rectangle.getHeight());
+			
+			result = buffer.array();
+		} else if (shape instanceof Circle) {
+			Circle circle = (Circle)shape;
+			
+			ByteBuffer buffer = ByteBuffer.allocate(CIRCLE_BYTE_SIZE);
+			buffer.putInt(CIRCLE_TYPE);
+			buffer.putFloat(circle.getCenterX());
+			buffer.putFloat(circle.getCenterY());
+			buffer.putFloat(circle.getRadius());
+			
+			result = buffer.array();
+		} else if (shape instanceof Line) {
+			Line line = (Line)shape;
+			
+			ByteBuffer buffer = ByteBuffer.allocate(LINE_BYTE_SIZE);
+			buffer.putInt(LINE_TYPE);
+			buffer.putFloat(line.getX1());
+			buffer.putFloat(line.getY1());
+			buffer.putFloat(line.getX2());
+			buffer.putFloat(line.getY2());
 			
 			result = buffer.array();
 		} else {

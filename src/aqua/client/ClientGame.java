@@ -5,10 +5,12 @@ import java.util.List;
 import knetwork.managers.ClientNetworkManager;
 import knetwork.message.messages.Message;
 
+import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.BasicGame;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.font.effects.ColorEffect;
@@ -16,23 +18,28 @@ import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.gui.TextField;
 
 import aqua.message.AquaMessageFactory;
+import aqua.message.PlayerActionMessage;
 import aqua.message.ServerUpdateMessage;
-import aqua.message.UpdateEntity;
 
 public class ClientGame extends BasicGame {
+	private static final String TITLE = "Aquaphobic";
+	private static int WIDTH = 800;
+	private static int HEIGHT = 600;
+	private static int FPS = 60;
+	private static final boolean singlePlayer = true;
+	
 	private ClientNetworkManager clientNetworkManager;
 //	private final String serverIp = "192.168.226.128";
 	private final String serverIp = "127.0.0.1";
 	private final int serverPort = 8087;
 
 	private final Color backgroundColor = Color.black;
-
 	private UnicodeFont font;
 	private TextField textField;
 	
 	private List<Shape> drawShapes;
 
-	public ClientGame(String title) {
+	private ClientGame(String title) {
 		super(title);
 		clientNetworkManager = new ClientNetworkManager();
 		clientNetworkManager.setMessageFactory(new AquaMessageFactory());
@@ -81,11 +88,51 @@ public class ClientGame extends BasicGame {
 
 	@Override
 	public void update(GameContainer container, int graphics) throws SlickException {
-		Message message = clientNetworkManager.recv();
+		Message message = null;
+		
+		int counter = 0;
+		while (true) {
+			Message temp = clientNetworkManager.recv();
+			if (temp == null) {
+				break;
+			} else {
+				counter++;
+				message = temp;
+			}
+		}
+//		System.out.println("READ " + counter + " messages");
+		
 		if (message instanceof ServerUpdateMessage) {
-			System.out.println("NUM SHAPES : " + ((ServerUpdateMessage)message).getShapes().size());
 			drawShapes = ((ServerUpdateMessage)message).getShapes();
 		}
+		
+		Input input = container.getInput();
+		PlayerActionMessage actionMessage = constructPlayerActionMessage(input);
+		clientNetworkManager.send(actionMessage);
+		
+	}
+	
+	private PlayerActionMessage constructPlayerActionMessage(Input input) {
+		boolean isLeft = input.isKeyDown(Input.KEY_A);
+		boolean isRight = input.isKeyDown(Input.KEY_D);
+		boolean isJump = input.isKeyDown(Input.KEY_W);
+		boolean isLaunch = input.isMouseButtonDown(0);
+		int mouseX = input.getMouseX();
+		int mouseY = input.getMouseY();
+		
+		return new PlayerActionMessage(isLeft, isRight, isJump, isLaunch, mouseX, mouseY);
 	}
 
+	public static void main(String[] args) {
+		ClientGame game = new ClientGame(TITLE);
+		try {
+			AppGameContainer app = new AppGameContainer(game);
+			app.setDisplayMode(WIDTH, HEIGHT, false);
+			app.setTargetFrameRate(FPS);
+			app.setShowFPS(true);
+			app.start();
+		} catch (SlickException e) {
+			e.printStackTrace();
+		}
+	}
 }
