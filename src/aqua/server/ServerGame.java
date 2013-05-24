@@ -20,8 +20,10 @@ import aqua.physics.BasicForce;
 import aqua.physics.PhysicsEngine;
 
 public class ServerGame {
+	private static final int DEFAULT_NUM_PLAYERS = 2;
+	
+	private int numPlayers;
 	private Map<Integer, ClientProfile> clientProfiles;
-	private int numPlayers = 1;
 	private ServerNetworkManager serverNetworkManager;
 
 	private PhysicsEngine physicsEngine = PhysicsEngine.getInstance();
@@ -56,7 +58,8 @@ public class ServerGame {
 		clientProfiles.put(clientId, profile);
 	}
 	
-	public ServerGame() {
+	public ServerGame(int numPlayers) {
+		this.numPlayers = numPlayers;
 		clientProfiles = new HashMap<Integer, ClientProfile>();
 		serverNetworkManager = new ServerNetworkManager();
 		serverNetworkManager.setMessageFactory(new AquaMessageFactory());
@@ -95,10 +98,10 @@ public class ServerGame {
 		physicsEngine.performTimeStep(deltaSeconds);
 	}
 	
-	private void init() {
+	private boolean init() {
 		if (!serverNetworkManager.waitForRegistrations(8087, numPlayers)) {
-			System.out.println("REGISTRATION FAILED!");
-			return;
+			System.out.println("UNABLE TO REGISTER PLAYERS");
+			return false;
 		}
 		
 		initWalls();
@@ -106,6 +109,8 @@ public class ServerGame {
 		for (Integer clientId : serverNetworkManager.getClientIds()) {
 			registerPlayer(clientId);
 		}
+		
+		return true;
 	}
 	
 	private void gameLoop() {
@@ -142,8 +147,17 @@ public class ServerGame {
 	}
 	
 	public static void main(String[] args) {
-		ServerGame game = new ServerGame();
-		game.init();
-		game.gameLoop();
+		int numPlayers = DEFAULT_NUM_PLAYERS;
+		
+		if (args.length > 0) {
+			numPlayers = Integer.parseInt(args[0]);
+		}
+		
+		ServerGame game = new ServerGame(numPlayers);
+		boolean initSuccess = game.init();
+		
+		if (initSuccess) {
+			game.gameLoop();
+		}
 	}
 }

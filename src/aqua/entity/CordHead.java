@@ -1,8 +1,5 @@
 package aqua.entity;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 import aqua.effect.PullEffect;
 import aqua.physics.PhysicsEngine;
 import aqua.physics.Vector2D;
@@ -99,6 +96,9 @@ public class CordHead extends PhysEntity {
 	@Override
 	public void destroy() {
 		super.destroy();
+		if (target instanceof Player) {
+			target.removeEffect(pullEffect);
+		}
 		if (tail != null) {
 			tail.destroy();
 		}

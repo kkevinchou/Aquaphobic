@@ -7,7 +7,7 @@ public abstract class BaseEntity {
 	protected float width;
 	protected float height;
 
-	public static int nextId = 0;
+	private static int nextId = 0;
 	
 	public BaseEntity(float x, float y, float width, float height) {
 		this.id = nextId++;
@@ -47,11 +47,11 @@ public abstract class BaseEntity {
 		return;
 	}
 	
-	public boolean equals(Object entity) {
-		if (!(entity instanceof BaseEntity)) {
+	public boolean equals(Object other) {
+		if (!(other instanceof BaseEntity)) {
 			return false;
 		}
-		return ((BaseEntity)entity).getId() == getId();
+		return ((BaseEntity)other).getId() == getId();
 	}
 	
 	public String toString() {

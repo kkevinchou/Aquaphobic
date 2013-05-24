@@ -26,13 +26,15 @@ public class ClientGame extends BasicGame {
 	private static int WIDTH = 800;
 	private static int HEIGHT = 600;
 	private static int FPS = 60;
-	private static final boolean singlePlayer = true;
+	private static final boolean singlePlayer = false;
+	private SinglePlayerServerThread serverThread;
 	
 	private ClientNetworkManager clientNetworkManager;
-//	private final String serverIp = "192.168.226.128";
-	private final String serverIp = "127.0.0.1";
+	private String serverIp = "192.168.226.128";
+//	private String serverIp = "127.0.0.1";
 	private final int serverPort = 8087;
-
+	
+	
 	private final Color backgroundColor = Color.black;
 	private UnicodeFont font;
 	private TextField textField;
@@ -68,6 +70,18 @@ public class ClientGame extends BasicGame {
 
 		initFonts();
 		initTextField(container);
+		
+		if (singlePlayer) {
+			serverIp = "127.0.0.1";
+			serverThread = new SinglePlayerServerThread();
+			serverThread.start();
+		}
+		
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+		}
+		
 		if (clientNetworkManager.register(serverIp, serverPort)) {
 			System.out.println("SUCCESSFULLY REGISTERED!");
 		}
