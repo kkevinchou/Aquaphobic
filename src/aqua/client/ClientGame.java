@@ -30,6 +30,7 @@ public class ClientGame extends BasicGame {
 	private SinglePlayerServerThread serverThread;
 	
 	private ClientNetworkManager clientNetworkManager;
+//	private String serverIp = "129.97.167.53";
 //	private String serverIp = "192.168.226.128";
 	private String serverIp = "127.0.0.1";
 	private final int serverPort = 8087;

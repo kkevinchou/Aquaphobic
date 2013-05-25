@@ -20,7 +20,7 @@ import aqua.physics.BasicForce;
 import aqua.physics.PhysicsEngine;
 
 public class ServerGame {
-	private static final int DEFAULT_NUM_PLAYERS = 2;
+	private static final int DEFAULT_NUM_PLAYERS = 3;
 	
 	private int numPlayers;
 	private Map<Integer, ClientProfile> clientProfiles;
