@@ -27,7 +27,19 @@ public class CordTail extends PhysEntity {
 	
 	@Override
 	public void onCollision(PhysEntity target) {
+		// Cord Head has already collided with something, no longer need to check for collisions
+		if (head.getTarget() != null) {
+			return;
+		}
+		
 		if (target instanceof CordTail) {
+			if (owner.attachment != null) {
+				CordHead targetCordHead = (CordHead)owner.attachment;
+				if (targetCordHead.getTail().equals(target)) {
+					return;
+				}
+			}
+
 			((CordTail)target).owner.destroyCord();
 			owner.destroyCord();
 		}

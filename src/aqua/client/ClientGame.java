@@ -26,13 +26,13 @@ public class ClientGame extends BasicGame {
 	private static int WIDTH = 800;
 	private static int HEIGHT = 600;
 	private static int FPS = 60;
-	private static final boolean singlePlayer = true;
+	private static final boolean singlePlayer = false;
 	private SinglePlayerServerThread serverThread;
 	
 	private ClientNetworkManager clientNetworkManager;
-	private String serverIp = "129.97.167.53";
+//	private String serverIp = "129.97.167.53";
 //	private String serverIp = "192.168.226.128";
-//	private String serverIp = "127.0.0.1";
+	private String serverIp = "127.0.0.1";
 	private final int serverPort = 8087;
 	
 	

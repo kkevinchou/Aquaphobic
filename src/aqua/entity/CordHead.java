@@ -1,5 +1,8 @@
 package aqua.entity;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import aqua.effect.PullEffect;
 import aqua.physics.PhysicsEngine;
 import aqua.physics.Vector2D;
@@ -21,6 +24,8 @@ public class CordHead extends PhysEntity {
 	private boolean collided;
 	
 	private float secondsSinceCollision;
+	
+	private Set<PhysEntity> ignoreCollisionSet;
 
 	public CordHead(float x, float y, Vector2D direction, Player owner) {
 		super(x, y, radius, radius, CollisionType.CIRCLE);
@@ -36,10 +41,22 @@ public class CordHead extends PhysEntity {
 		
 		tail = new CordTail(this, owner);
 		PhysicsEngine.getInstance().queueAddition(tail);
+
+		ignoreCollisionSet = new HashSet<PhysEntity>();
+		ignoreCollisionSet.add(owner);
+		ignoreCollisionSet.add(tail);
+	}
+	
+	public CordTail getTail() {
+		return tail;
 	}
 	
 	public Player getOwner() {
 		return owner;
+	}
+	
+	public PhysEntity getTarget() {
+		return target;
 	}
 	
 	@Override
@@ -60,18 +77,26 @@ public class CordHead extends PhysEntity {
 	
 	@Override
 	protected void onCollision(PhysEntity target) {
-		if (collided || owner.equals(target) || (tail != null && tail.equals(target))
+		if (collided || ignoreCollisionSet.contains(target)
 				|| !(target instanceof Player || target instanceof Platform
 				|| target instanceof CordHead || target instanceof CordTail )) {
 			return;
 		}
 		
-		collided = true;
-		setSpeed(0, 0);
-		
-		this.target = target;
+		if (owner.attachment != null) {
+			CordHead attackerCord = (CordHead)owner.attachment;
+			if (target.equals(attackerCord) || target.equals(attackerCord.getTail()) || target.equals(attackerCord.owner)) {
+				return;
+			}
+		}
 		
 		if (target instanceof Player) {
+			if (target.attachment != null) {
+				((CordHead)target.attachment).owner.destroyCord();
+				owner.destroyCord();
+				return;
+			}
+			
 			targetOffsetX = this.getX() - target.getX();
 			targetOffsetY = this.getY() - target.getY();
 			
@@ -91,6 +116,10 @@ public class CordHead extends PhysEntity {
 			((CordHead)target).owner.destroyCord();
 			owner.destroyCord();
 		}
+		
+		collided = true;
+		setSpeed(0, 0);
+		this.target = target;
 	}
 	
 	@Override
@@ -98,6 +127,7 @@ public class CordHead extends PhysEntity {
 		super.destroy();
 		if (target instanceof Player) {
 			target.removeEffect(pullEffect);
+			target.attachment = null;
 		}
 		if (tail != null) {
 			tail.destroy();
