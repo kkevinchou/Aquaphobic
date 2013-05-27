@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import kcommon.Utility;
+import kcommon.Util;
 import knetwork.managers.ServerNetworkManager;
 import knetwork.message.messages.Message;
 
@@ -126,12 +126,12 @@ public class ServerGame {
 	private void gameLoop() {
 		boolean gameActive = true;
 		
-		long currentTime = Utility.getTick();
+		long currentTime = Util.getTick();
 		int accumulatedTime = 0;
 		int dumpTime = 1000 / 60;
 		
 		while (gameActive) {
-			long newTime = Utility.getTick();
+			long newTime = Util.getTick();
 			int delta = (int)(newTime - currentTime);
 			
 			for (int i = 0; i < numPlayers * 2; i++) {
