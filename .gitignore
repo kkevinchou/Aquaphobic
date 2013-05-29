@@ -7,4 +7,5 @@ build.xml
 .classpath
 .project
 .settings
+.gitignore
 TODO.txt
